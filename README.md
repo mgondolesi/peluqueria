@@ -1,14 +1,14 @@
 # dental-app-system
 MERN stack web application built for dental clinics to manage their client appointments. 
 
-Technologies used: 
+## Technologies used: 
 FrontEnd: HTML5, CSS3, Materialize CSS, ReactJS
-Backend: Node.js, MongoDB
+Backend: Node.js, MongoDB, Express, JSON web tokens
 
-IMPORTANT!
+## IMPORTANT!
 Just for testing purposes use these credentials to login and manage appointments:
 
-User: admin
-Password: admin1234
+* **User:** admin
+* **Password:** admin1234
 
 
