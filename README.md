@@ -12,3 +12,5 @@ Just for testing purposes use these credentials to login and manage appointments
 * **Password:** admin1234
 
 
+## Application Demo:
+![Application Demo](application-demo.gif)
