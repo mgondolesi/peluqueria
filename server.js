@@ -13,7 +13,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 //Connect to MongoDB
-const db = process.env.MONGO_URI;
+const db = process.env.MONGO_URL;
 
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -116,6 +116,42 @@ app.delete("/appointment/:id", auth, (req, res) => {
 //@route POST /login
 //@desc  Admin login
 //@access Public
+app.post("/register", (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ msg: "Please enter all fields." });
+  }
+
+  User.findOne({ username }).then(user => {
+    if (user) return res.status(400).json({ msg: "Username already exists." });
+
+    const newUser = new User({
+      username,
+      password
+    });
+
+    newUser.save().then(user => {
+      jwt.sign(
+        { id: user._id },
+        process.env.jwtSecret,
+        { expiresIn: 3600 },
+        (err, token) => {
+          console.log(err);
+          if (err) return res.status(400).json({ msg: "Something went wrong" });
+          res.json({
+            token,
+            user: {
+              id: user._id,
+              username: user.username
+            }
+          });
+        }
+      );
+    });
+  });
+});
+
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -134,6 +170,7 @@ app.post("/login", (req, res) => {
       process.env.jwtSecret,
       { expiresIn: 3600 },
       (err, token) => {
+        console.log(err);
         if (err) return res.status(400).json({ msg: "Something went wrong" });
         res.json({
           token,
@@ -156,6 +193,33 @@ app.post("/login", (req, res) => {
     });
   };
 
+//@route GET /available-times
+//@desc  Get available times
+//@access Public
+app.get("/available-times", (req, res) => {
+  // Obtener todos los horarios disponibles desde las 08:00 hasta las 20:00
+  const allTimes = [];
+  let time = new Date();
+  time.setHours(8, 0, 0); // Establecer el horario inicial a las 08:00
+
+  while (time.getHours() < 20) {
+    allTimes.push(time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+    time.setMinutes(time.getMinutes() + 30); // Añadir 30 minutos
+  }
+
+  Appointment.find({date: req.body.date})
+    .distinct("time") // Obtén los valores únicos de la propiedad "time"
+    .then(occupiedTimes => {
+      // Filtrar los tiempos ocupados de los horarios disponibles
+      const availableTimes = allTimes.filter(time => !occupiedTimes.includes(time));
+      res.json({ times: availableTimes });
+    })
+    .catch(err =>
+      res
+        .status(500)
+        .json({ msg: "Could not get the available times. Please try again." })
+    );
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
