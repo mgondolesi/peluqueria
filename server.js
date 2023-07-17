@@ -197,6 +197,12 @@ app.post("/login", (req, res) => {
 //@desc  Get available times
 //@access Public
 app.get("/available-times", (req, res) => {
+  
+  const { date } = req.body;
+  // Verificar si el parámetro 'date' está presente
+  if (!date) {
+    return res.status(400).json({ msg: "Date is required." });
+  }
   // Obtener todos los horarios disponibles desde las 08:00 hasta las 20:00
   const allTimes = [];
   let time = new Date();
