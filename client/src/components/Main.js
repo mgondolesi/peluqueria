@@ -17,7 +17,9 @@ function Main() {
 
   useEffect(() => {
     M.AutoInit();
-    fetchAvailableTimes("2023-07-17"); // Initial date
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0]; // Obtener la fecha en formato "YYYY-MM-DD"
+    fetchAvailableTimes(formattedDate); // Utilizar la fecha actual
   }, []);
 
   useEffect(() => {
@@ -43,9 +45,7 @@ function Main() {
   };
 
   const handleChange = e => {
-    console.log(e);
     const { name, value } = e.target;
-    console.log(name, " ", value);
     switch (name) {
       case "fullname":
         setFullname(value);
@@ -135,7 +135,7 @@ function Main() {
                 arrow_downward
               </i>
             </h2>
-          </div>
+                </div>
           <div className="col s12 m6">
             <div className="card blue-grey darken-1 center-align">
               <div className="card-content white-text">
@@ -143,106 +143,106 @@ function Main() {
                   <div className="input-field">
                     <i className="material-icons prefix">account_circle</i>
                     <input
-                      id="full_name"
-                      name="fullname"
-                      type="text"
-                      value={fullname}
-                      className="validate"
-                      onChange={handleChange}
-                    />
+                    id="full_name"
+                    name="fullname"
+                    type="text"
+                    value={fullname}
+                    className="validate"
+                    onChange={handleChange}
+                  />
                     <label htmlFor="full_name">Nombre y Apellido</label>
-                  </div>
+                </div>
                   <div className="input-field">
                     <i className="material-icons prefix">phone</i>
                     <input
-                      id="cellphone"
-                      name="cellphone"
-                      type="number"
-                      value={cellphone}
-                      className="validate"
-                      onChange={handleChange}
-                    />
+                    id="cellphone"
+                    name="cellphone"
+                    type="number"
+                    value={cellphone}
+                    className="validate"
+                    onChange={handleChange}
+                  />
                     <label htmlFor="cellphone">Celular</label>
-                  </div>
-                  <div className="input-field">
-                    <i className="material-icons prefix">event</i>
-                    <input
-                      id="date"
-                      name="date"
-                      type="date"
-                      className="validate"
-                      value={date}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="date">Fecha</label>
-                  </div>
-                  {loaded && 
-                  <Form.Item label="Hora">
-                  <Select
+              </div>
+            <div className="input-field">
+              <i className="material-icons prefix">event</i>
+              <input
+                id="date"
+                name="date"
+                type="date"
+                className="validate"
+                value={date}
+                onChange={handleChange}
+              />
+              <label htmlFor="date">Fecha</label>
+            </div>
+            {loaded &&
+              <Form.Item label="Hora">
+                <Select
                   id="time"
                   name="time"
                   className="validate"
                   value={time}
                   onChange={handleChangeTime}
                 >
-                    {tiemposDisponibles.map(time => {
-                       return <Select.Option key={time} value={time}>
-                        {time}
-                      </Select.Option>
-                      }
-                      )}
-                  </Select> 
-                  </Form.Item>
+                  {tiemposDisponibles.map(time => {
+                    return <Select.Option key={time} value={time}>
+                      {time}
+                    </Select.Option>
                   }
-                  {/* <div className="input-field">
-                    <i className="material-icons prefix">access_time</i>
-                    <select
-                      id="time"
-                      name="time"
-                      className="validate"
-                      value={time}
-                      onChange={handleChange}
-                    >
-                      {tiemposDisponibles.map(time => {
-                       return <option key={time} value={time}>
-                        {time}
-                      </option>
-                      }
-                      )}
-                    </select>
+                  )}
+                </Select>
+              </Form.Item>
+            }
+            {/* <div className="input-field">
+                      <i className="material-icons prefix">access_time</i>
+                      <select
+                        id="time"
+                        name="time"
+                        className="validate"
+                        value={time}
+                        onChange={handleChange}
+                      >
+                        {tiemposDisponibles.map(time => {
+                         return <option key={time} value={time}>
+                          {time}
+                        </option>
+                        }
+                        )}
+                      </select>
 
-                    <label htmlFor="time">Time</label>
-                  </div> */}
-                  <div className="input-field">
-                    <i className="material-icons prefix">description</i>
-                    <textarea
-                      id="description"
-                      name="description"
-                      className="materialize-textarea"
-                      style={{ height: "4rem" }}
-                      value={description}
-                      onChange={handleChange}
-                    ></textarea>
-                    <label htmlFor="description">How can we help you?</label>
-                  </div>
-                  <div className="card-action">
-                    <button
-                      className="waves-effect waves-light btn s12 m8"
-                      style={{ margin: "5px" }}
-                      onClick={makeAppointment}
-                    >
-                      <i className="material-icons right">send</i>Book
-                      Appointment
-                    </button>
-                    <button
-                      type="reset"
-                      className="waves-effect red waves-light btn"
-                      onClick={resetForm}
-                    >
-                      <i className="material-icons right">clear</i>
-                      Reset
-                    </button>
-                  </div>
+                      <label htmlFor="time">Time</label>
+                    </div> */}
+            <div className="input-field">
+              <i className="material-icons prefix">description</i>
+              <textarea
+                id="description"
+                name="description"
+                className="materialize-textarea"
+                style={{ height: "4rem" }}
+                value={description}
+                onChange={handleChange}
+              ></textarea>
+              <label htmlFor="description">How can we help you?</label>
+            </div>
+            <div className="card-action">
+              <button
+                className="waves-effect waves-light btn s12 m8"
+                style={{ margin: "5px" }}
+                onClick={makeAppointment}
+              >
+                <i className="material-icons right">send</i>Book
+                Appointment
+              </button>
+              <button
+                type="reset"
+                className="waves-effect red waves-light btn"
+                onClick={resetForm}
+              >
+                <i className="material-icons right">clear</i>
+                Reset
+              </button>
+            </div>
                 </form>
               </div>
             </div>
