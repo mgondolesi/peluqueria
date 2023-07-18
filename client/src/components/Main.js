@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Form, Input, Select, Checkbox, Button, message, Spin } from 'antd';
 import axios from "axios";
 import M from "materialize-css/dist/js/materialize.min.js";
 import bg from "../images/dentist.png";
@@ -11,31 +12,40 @@ function Main() {
   const [description, setDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [tiemposDisponibles, setTiemposDisponibles] = useState([]);
+  const [tiemposDisponibles, setTiemposDisponibles] = useState([""]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     M.AutoInit();
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/available-times", {
-          params: {
-            date: "2023-07-17"
-          }
-        });
-        setTiemposDisponibles(response.data.times);
-        setLoaded(true);
-        console.log(response.data.times);
-      } catch (error) {
-        console.error("Error fetching available times:", error);
-        setLoaded(true);
-      }
-    };
-    fetchData();
+    fetchAvailableTimes("2023-07-17"); // Initial date
   }, []);
 
+  useEffect(() => {
+    if (date) {
+      fetchAvailableTimes(date);
+    }
+  }, [date]);
+
+  const fetchAvailableTimes = async (selectedDate) => {
+    try {
+      const response = await axios.get("http://localhost:5000/available-times", {
+        params: {
+          date: selectedDate
+        }
+      });
+      setTiemposDisponibles(response.data.times);
+      setLoaded(true);
+      console.log(response.data.times);
+    } catch (error) {
+      console.error("Error fetching available times:", error);
+      setLoaded(true);
+    }
+  };
+
   const handleChange = e => {
+    console.log(e);
     const { name, value } = e.target;
+    console.log(name, " ", value);
     switch (name) {
       case "fullname":
         setFullname(value);
@@ -55,6 +65,11 @@ function Main() {
       default:
         break;
     }
+  };
+
+  const handleChangeTime = e => {
+    console.log(e);
+    setTime(e);
   };
 
   const makeAppointment = e => {
@@ -99,7 +114,7 @@ function Main() {
 
   return (
     <div>
-      <img src={bg} className="bg" alt="background" />
+      {/* <img src={bg} className="bg" alt="background" /> */}
       <div className="container note">
         <div className="row">
           <div className="col s12 m6">
@@ -135,7 +150,7 @@ function Main() {
                       className="validate"
                       onChange={handleChange}
                     />
-                    <label htmlFor="full_name">Full Name</label>
+                    <label htmlFor="full_name">Nombre y Apellido</label>
                   </div>
                   <div className="input-field">
                     <i className="material-icons prefix">phone</i>
@@ -147,7 +162,7 @@ function Main() {
                       className="validate"
                       onChange={handleChange}
                     />
-                    <label htmlFor="cellphone">Cellphone</label>
+                    <label htmlFor="cellphone">Celular</label>
                   </div>
                   <div className="input-field">
                     <i className="material-icons prefix">event</i>
@@ -159,40 +174,28 @@ function Main() {
                       value={date}
                       onChange={handleChange}
                     />
-                    <label htmlFor="date">Date</label>
+                    <label htmlFor="date">Fecha</label>
                   </div>
-                  <div className="input-field">
+                  {loaded && 
+                  <Form.Item label="Hora">
+                  <Select
+                  id="time"
+                  name="time"
+                  className="validate"
+                  value={time}
+                  onChange={handleChangeTime}
+                >
+                    {tiemposDisponibles.map(time => {
+                       return <Select.Option key={time} value={time}>
+                        {time}
+                      </Select.Option>
+                      }
+                      )}
+                  </Select> 
+                  </Form.Item>
+                  }
+                  {/* <div className="input-field">
                     <i className="material-icons prefix">access_time</i>
-                    {/* <select
-                      id="time"
-                      name="time"
-                      className="validate"
-                      value={time}
-                      onChange={handleChange}
-                    >                      
-                      <option value="" disabled>
-                        Select Time
-                      </option>   */}
-                    {/* {loaded && console.log(tiemposDisponibles.map(time => (
-                          <option key={time} value={time}>
-                            {time}
-                          </option>
-                        ))) &&
-                        tiemposDisponibles.map(time => (
-                          <option  value={time}>
-                            {time}
-                          </option>
-                        ))} */}
-                    {/* {console.log(tiemposDisponibles.map(time => (
-                          <option value={time} key={time}>
-                            {time}
-                          </option>
-                        ))) && tiemposDisponibles.map(time => (
-                          <option value={time} key={time}>
-                            {time}
-                          </option>
-                        ))}
-                    </select> */}
                     <select
                       id="time"
                       name="time"
@@ -200,16 +203,16 @@ function Main() {
                       value={time}
                       onChange={handleChange}
                     >
-                   
-                   {tiemposDisponibles.map((time, index) => (
-                          <option key={index} value={time}>
-                            {time}
-                          </option>
-                        ))}
+                      {tiemposDisponibles.map(time => {
+                       return <option key={time} value={time}>
+                        {time}
+                      </option>
+                      }
+                      )}
                     </select>
 
                     <label htmlFor="time">Time</label>
-                  </div>
+                  </div> */}
                   <div className="input-field">
                     <i className="material-icons prefix">description</i>
                     <textarea
