@@ -139,6 +139,9 @@ class Main extends Component {
                         id="time"
                         name="time"
                         type="time"
+                        step="1800"
+                        min="09:00"
+                        max="20:00"
                         className="validate"
                         value={time}
                         onChange={this.handleChange}
