@@ -6,8 +6,10 @@ const Appointment = require("./models/appointment");
 const User = require("./models/user");
 const auth = require("./middleware/auth");
 require("dotenv").config();
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 const PORT = process.env.PORT || 5000;
@@ -198,7 +200,7 @@ app.post("/login", (req, res) => {
 //@access Public
 app.get("/available-times", (req, res) => {
   
-  const { date } = req.body;
+  const { date } = req.query;
   // Verificar si el parámetro 'date' está presente
   if (!date) {
     return res.status(400).json({ msg: "Date is required." });
@@ -213,7 +215,7 @@ app.get("/available-times", (req, res) => {
     time.setMinutes(time.getMinutes() + 30); // Añadir 30 minutos
   }
 
-  Appointment.find({date: req.body.date})
+  Appointment.find({date: req.query.date})
     .distinct("time") // Obtén los valores únicos de la propiedad "time"
     .then(occupiedTimes => {
       // Filtrar los tiempos ocupados de los horarios disponibles
