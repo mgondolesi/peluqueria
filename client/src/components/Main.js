@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Select, Checkbox, Button, message, Spin } from 'antd';
+import { Form, Input, Select, Button, message, DatePicker, InputNumber } from 'antd';
 import axios from "axios";
 import M from "materialize-css/dist/js/materialize.min.js";
-import bg from "../images/dentist.jpg";
+import bg from "../images/clinic-1.jpg";
+
+const { Option } = Select;
 
 function Main() {
   const [fullname, setFullname] = useState("");
   const [cellphone, setCellphone] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(null);
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [tiemposDisponibles, setTiemposDisponibles] = useState([""]);
+  const [tiemposDisponibles, setTiemposDisponibles] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ function Main() {
 
   useEffect(() => {
     if (date) {
-      fetchAvailableTimes(date);
+      fetchAvailableTimes(date.format("YYYY-MM-DD"));
     }
   }, [date]);
 
@@ -44,45 +46,27 @@ function Main() {
     }
   };
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    switch (name) {
-      case "fullname":
-        setFullname(value);
-        break;
-      case "cellphone":
-        setCellphone(value);
-        break;
-      case "date":
-        setDate(value);
-        break;
-      case "time":
-        setTime(value);
-        break;
-      case "description":
-        setDescription(value);
-        break;
-      default:
-        break;
-    }
+  const handleChangeTime = (value) => {
+    console.log(value);
+    setTime(value);
   };
 
-  const handleChangeTime = e => {
-    console.log(e);
-    setTime(e);
+  const handleChangeDesc = (value) => {
+    console.log(value);
+    setDescription(value);
   };
 
-  const handleChangeDesc = e => {
-    console.log(e);
-    setDescription(e);
+  const handleChangeDate = (date) => {
+    console.log(date);
+    setDate(date);
   };
 
-  const makeAppointment = e => {
-    e.preventDefault();
+  const makeAppointment = (e) => {
+    //e.preventDefault();
     const newAppointment = {
       fullname,
       cellphone,
-      date,
+      date: date ? date.format("YYYY-MM-DD") : "",
       time,
       description
     };
@@ -92,27 +76,21 @@ function Main() {
         setSuccessMessage(result.data.msg);
         setFullname("");
         setCellphone("");
-        setDate("");
+        setDate(null);
         setTime("");
         setDescription("");
-        M.toast({
-          html: successMessage,
-          classes: "green darken-1 rounded"
-        });
+        message.success(successMessage, 2);
       })
       .catch(error => {
         setErrorMessage(error.response.data.msg);
-        M.toast({
-          html: errorMessage,
-          classes: "red darken-1 rounded"
-        });
+        message.error(errorMessage, 2);
       });
   };
 
   const resetForm = () => {
     setFullname("");
     setCellphone("");
-    setDate("");
+    setDate(null);
     setTime("");
     setDescription("");
   };
@@ -144,137 +122,88 @@ function Main() {
           <div className="col s12 m6">
             <div className="card blue-grey darken-1 center-align">
               <div className="card-content white-text">
-                <form>
-                  <div className="input-field">
-                    <i className="material-icons prefix">account_circle</i>
-                    <input
-                      id="full_name"
-                      name="fullname"
-                      type="text"
-                      value={fullname}
-                      className="validate"
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="full_name">Nombre y Apellido</label>
-                  </div>
-                  <div className="input-field">
-                    <i className="material-icons prefix">phone</i>
-                    <input
-                      id="cellphone"
-                      name="cellphone"
-                      type="number"
-                      value={cellphone}
-                      className="validate"
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="cellphone">Celular</label>
-                  </div>
-                  <div className="input-field">
-                    <i className="material-icons prefix">event</i>
-                    <input
-                      id="date"
-                      name="date"
-                      type="date"
-                      className="validate"
-                      value={date}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="date">Fecha</label>
-                  </div>
-                  <div className="input-field">
-                    {loaded &&
-                      <Form.Item label="Hora">
-                        <Select
-                          id="time"
-                          name="time"
-                          className="validate"
-                          value={time}
-                          onChange={handleChangeTime}
-                        >
-                          {tiemposDisponibles.map(time => {
-                            return <Select.Option key={time} value={time}>
-                              {time}
-                            </Select.Option>
-                          }
-                          )}
-                        </Select>
-                      </Form.Item>
-                    }
-                  </div>
-                  {/* <div className="input-field">
-                      <i className="material-icons prefix">access_time</i>
-                      <select
+                <Form layout="vertical" onFinish={makeAppointment}>
+                  <Form.Item label="Nombre">
+                    {loaded && (
+                      <Input
+                        id="full_name"
+                        name="fullname"
+                        value={fullname}
+                        onChange={e => setFullname(e.target.value)}
+                      />
+                    )}
+                  </Form.Item>
+                  <Form.Item label="Teléfono" style={{ width: '100%' }}>
+                    {loaded && (
+                      <Input
+                        id="cellphone"
+                        name="cellphone"
+                        style={{ width: '100%' }}
+                        value={cellphone}
+                        onChange={e => setCellphone(e.target.value)}
+                      />
+                    )}
+                  </Form.Item>
+                  <Form.Item label="Fecha" style={{ width: '100%' }}>
+                    {loaded && (
+                      <DatePicker
+                        id="date"
+                        name="date"
+                        style={{ width: '100%' }}
+                        value={date}
+                        onChange={handleChangeDate}
+                      />
+                    )}
+                  </Form.Item>
+                  <Form.Item label="Hora">
+                    {loaded && (
+                      <Select
                         id="time"
                         name="time"
-                        className="validate"
                         value={time}
-                        onChange={handleChange}
+                        onChange={handleChangeTime}
                       >
-                        {tiemposDisponibles.map(time => {
-                         return <option key={time} value={time}>
-                          {time}
-                        </option>
-                        }
-                        )}
-                      </select>
-
-                      <label htmlFor="time">Time</label>
-                    </div> */}
-                  {/* <div className="input-field">
-                    <i className="material-icons prefix">description</i>
-                    <textarea
-                      id="description"
-                      name="description"
-                      className="materialize-textarea"
-                      style={{ height: "4rem" }}
-                      value={description}
-                      onChange={handleChange}
-                    ></textarea>
-                    <label htmlFor="description">How can we help you?</label>
-                  </div> */}
-                  <div className="input-field">
-                    {loaded &&
-                      <Form.Item label="Descripcion">
-                        <Select
-                          id="description"
-                          name="description"
-                          className="validate"
-                          value={description}
-                          onChange={handleChangeDesc}
-                        >
-                          <Select.Option key='Corte Hombre' value='Corte Hombre'>
+                        {tiemposDisponibles.map(time => (
+                          <Option key={time} value={time}>
+                            {time}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Form.Item>
+                  <Form.Item label="Descripción">
+                    {loaded && (
+                      <Select
+                        id="description"
+                        name="description"
+                        value={description}
+                        onChange={handleChangeDesc}
+                      >
+                        <Option key='Corte Hombre' value='Corte Hombre'>
                           Corte Hombre
-                          </Select.Option>
-                          <Select.Option key="Corte Mujer" value="Corte Mujer">
+                        </Option>
+                        <Option key="Corte Mujer" value="Corte Mujer">
                           Corte Mujer
-                          </Select.Option>
-                          <Select.Option key="Color" value="Color">
+                        </Option>
+                        <Option key="Color" value="Color">
                           Color
-                          </Select.Option>
-
-                        </Select>
-                      </Form.Item>
-                    }
-                  </div>
+                        </Option>
+                      </Select>
+                    )}
+                  </Form.Item>
                   <div className="card-action">
-                    <button
-                      className="waves-effect waves-light btn s12 m8"
+                    <Button
+                      type="primary"
+                      htmlType="submit"
                       style={{ margin: "5px" }}
-                      onClick={makeAppointment}
                     >
-                      <i className="material-icons right">send</i>Book
-                      Appointment
-                    </button>
-                    <button
-                      type="reset"
-                      className="waves-effect red waves-light btn"
-                      onClick={resetForm}
-                    >
-                      <i className="material-icons right">clear</i>
-                      Reset
-                    </button>
+                      <i className="material-icons right">send</i>Reservar
+                    </Button>
+                    <Button type="danger" htmlType="cancel" onClick={resetForm} className="red darken-1">
+                      <i className="material-icons right">clear</i>Limpiar
+                    </Button>
                   </div>
-                </form>
+                </Form>
               </div>
             </div>
           </div>

@@ -103,8 +103,8 @@ class Dashboard extends Component {
       <div className="row dashboard">
         <div className="col m10 offset-m1">
           <div className="green-text darken-2">
-            <h4> Manage Appointments</h4>
-            <h6>Total Apointments: {this.state.appointments.length}</h6>
+            <h4> Administrar Turnos</h4>
+            <h6>Turnos Totales: {this.state.appointments.length}</h6>
           </div>
           <div className="row">
             <div className="input-field col">
@@ -116,8 +116,7 @@ class Dashboard extends Component {
                 onChange={e => this.setState({ filterName: e.target.value })}
               />
               <label htmlFor="fullname">
-                <i className="material-icons left">find_in_page</i> Search by
-                name
+                <i className="material-icons left">find_in_page</i> Buscar por nombre
               </label>
             </div>
             <div className="input-field col">
@@ -128,7 +127,7 @@ class Dashboard extends Component {
                 value={filterDate}
                 onChange={e => this.setState({ filterDate: e.target.value })}
               />
-              <label htmlFor="date">Search by date</label>
+              <label htmlFor="date">Buscar por fecha</label>
             </div>
           </div>
           {loading ? (
@@ -140,12 +139,12 @@ class Dashboard extends Component {
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Full Name</th>
-                  <th>Cellphone</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th style={{ width: "300px" }}>Description</th>
-                  <th>Actions</th>
+                  <th>Nombre</th>
+                  <th>Telefono</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th style={{ width: "300px" }}>Descripcion</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -169,7 +168,7 @@ class Dashboard extends Component {
                           onClick={() => this.setState({ appointment })}
                         >
                           <i className="material-icons right">delete</i>
-                          Cancel{" "}
+                          Cancelar{" "}
                         </button>
                       </td>
                       <td>
@@ -179,7 +178,7 @@ class Dashboard extends Component {
                           onClick={() => this.setState({ appointment })}
                         >
                           <i className="material-icons right">edit</i>
-                          Edit
+                          Editar
                         </button>
                       </td>
                     </tr>

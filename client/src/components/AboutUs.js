@@ -5,7 +5,7 @@ import clinic2 from "../images/clinic-2.jpg";
 function AboutUs() {
   return (
     <div className="container white-text">
-      <h2 className="green-text">About Us</h2>
+      <h2 className="green-text">Sobre Nosotros</h2>
       <p>
         Lorem Ipsum is simply dummy text of the printing and typesetting
         industry. Lorem Ipsum has been the industry's standard dummy text ever

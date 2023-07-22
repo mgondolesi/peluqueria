@@ -57,15 +57,15 @@ class NavBar extends Component {
                 </a>
                 <ul className="right hide-on-med-and-down">
                   <li>
-                    <Link to="/dashboard">Manage Appointments</Link>
+                    <Link to="/dashboard">Administrar turnos</Link>
                   </li>
                   <li>
-                    <Link to="/about">About Us</Link>
+                    <Link to="/about">Sobre Nosotros</Link>
                   </li>
                   {isAuthenticated ? (
                     <li>
                       <Link to="/login" onClick={this.logout}>
-                        Logout
+                        Cerrar Sesion
                       </Link>
                     </li>
                   ) : null}
@@ -77,13 +77,13 @@ class NavBar extends Component {
         <ul id="nav-mobile" className="sidenav">
           <li>
             <Link to="/dashboard" onClick={this.closeSidenav}>
-              Manage Appointments
+              Administrar turnos
             </Link>
           </li>
           <li className="divider"></li>
           <li>
             <Link to="/about" onClick={this.closeSidenav}>
-              About Us
+              Sobre Nosotros
             </Link>
           </li>
           <li className="divider"></li>
@@ -96,7 +96,7 @@ class NavBar extends Component {
                   this.closeSidenav();
                 }}
               >
-                Logout
+                Cerrar Sesion
               </Link>
             </li>
           ) : null}
