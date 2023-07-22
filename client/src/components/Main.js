@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Select, Checkbox, Button, message, Spin } from 'antd';
 import axios from "axios";
 import M from "materialize-css/dist/js/materialize.min.js";
-import bg from "../images/dentist.png";
+import bg from "../images/dentist.jpg";
 
 function Main() {
   const [fullname, setFullname] = useState("");
@@ -72,6 +72,11 @@ function Main() {
     setTime(e);
   };
 
+  const handleChangeDesc = e => {
+    console.log(e);
+    setDescription(e);
+  };
+
   const makeAppointment = e => {
     e.preventDefault();
     const newAppointment = {
@@ -114,7 +119,7 @@ function Main() {
 
   return (
     <div>
-      {/* <img src={bg} className="bg" alt="background" /> */}
+      <img src={bg} className="bg" alt="background" />
       <div className="container note">
         <div className="row">
           <div className="col s12 m6">
@@ -135,7 +140,7 @@ function Main() {
                 arrow_downward
               </i>
             </h2>
-                </div>
+          </div>
           <div className="col s12 m6">
             <div className="card blue-grey darken-1 center-align">
               <div className="card-content white-text">
@@ -143,58 +148,60 @@ function Main() {
                   <div className="input-field">
                     <i className="material-icons prefix">account_circle</i>
                     <input
-                    id="full_name"
-                    name="fullname"
-                    type="text"
-                    value={fullname}
-                    className="validate"
-                    onChange={handleChange}
-                  />
+                      id="full_name"
+                      name="fullname"
+                      type="text"
+                      value={fullname}
+                      className="validate"
+                      onChange={handleChange}
+                    />
                     <label htmlFor="full_name">Nombre y Apellido</label>
-                </div>
+                  </div>
                   <div className="input-field">
                     <i className="material-icons prefix">phone</i>
                     <input
-                    id="cellphone"
-                    name="cellphone"
-                    type="number"
-                    value={cellphone}
-                    className="validate"
-                    onChange={handleChange}
-                  />
+                      id="cellphone"
+                      name="cellphone"
+                      type="number"
+                      value={cellphone}
+                      className="validate"
+                      onChange={handleChange}
+                    />
                     <label htmlFor="cellphone">Celular</label>
-              </div>
-            <div className="input-field">
-              <i className="material-icons prefix">event</i>
-              <input
-                id="date"
-                name="date"
-                type="date"
-                className="validate"
-                value={date}
-                onChange={handleChange}
-              />
-              <label htmlFor="date">Fecha</label>
-            </div>
-            {loaded &&
-              <Form.Item label="Hora">
-                <Select
-                  id="time"
-                  name="time"
-                  className="validate"
-                  value={time}
-                  onChange={handleChangeTime}
-                >
-                  {tiemposDisponibles.map(time => {
-                    return <Select.Option key={time} value={time}>
-                      {time}
-                    </Select.Option>
-                  }
-                  )}
-                </Select>
-              </Form.Item>
-            }
-            {/* <div className="input-field">
+                  </div>
+                  <div className="input-field">
+                    <i className="material-icons prefix">event</i>
+                    <input
+                      id="date"
+                      name="date"
+                      type="date"
+                      className="validate"
+                      value={date}
+                      onChange={handleChange}
+                    />
+                    <label htmlFor="date">Fecha</label>
+                  </div>
+                  <div className="input-field">
+                    {loaded &&
+                      <Form.Item label="Hora">
+                        <Select
+                          id="time"
+                          name="time"
+                          className="validate"
+                          value={time}
+                          onChange={handleChangeTime}
+                        >
+                          {tiemposDisponibles.map(time => {
+                            return <Select.Option key={time} value={time}>
+                              {time}
+                            </Select.Option>
+                          }
+                          )}
+                        </Select>
+                      </Form.Item>
+                    }
+                  </div>
+                  {/* <div className="input-field">
                       <i className="material-icons prefix">access_time</i>
                       <select
                         id="time"
@@ -213,36 +220,60 @@ function Main() {
 
                       <label htmlFor="time">Time</label>
                     </div> */}
-            <div className="input-field">
-              <i className="material-icons prefix">description</i>
-              <textarea
-                id="description"
-                name="description"
-                className="materialize-textarea"
-                style={{ height: "4rem" }}
-                value={description}
-                onChange={handleChange}
-              ></textarea>
-              <label htmlFor="description">How can we help you?</label>
-            </div>
-            <div className="card-action">
-              <button
-                className="waves-effect waves-light btn s12 m8"
-                style={{ margin: "5px" }}
-                onClick={makeAppointment}
-              >
-                <i className="material-icons right">send</i>Book
-                Appointment
-              </button>
-              <button
-                type="reset"
-                className="waves-effect red waves-light btn"
-                onClick={resetForm}
-              >
-                <i className="material-icons right">clear</i>
-                Reset
-              </button>
-            </div>
+                  {/* <div className="input-field">
+                    <i className="material-icons prefix">description</i>
+                    <textarea
+                      id="description"
+                      name="description"
+                      className="materialize-textarea"
+                      style={{ height: "4rem" }}
+                      value={description}
+                      onChange={handleChange}
+                    ></textarea>
+                    <label htmlFor="description">How can we help you?</label>
+                  </div> */}
+                  <div className="input-field">
+                    {loaded &&
+                      <Form.Item label="Descripcion">
+                        <Select
+                          id="description"
+                          name="description"
+                          className="validate"
+                          value={description}
+                          onChange={handleChangeDesc}
+                        >
+                          <Select.Option key='Corte Hombre' value='Corte Hombre'>
+                          Corte Hombre
+                          </Select.Option>
+                          <Select.Option key="Corte Mujer" value="Corte Mujer">
+                          Corte Mujer
+                          </Select.Option>
+                          <Select.Option key="Color" value="Color">
+                          Color
+                          </Select.Option>
+
+                        </Select>
+                      </Form.Item>
+                    }
+                  </div>
+                  <div className="card-action">
+                    <button
+                      className="waves-effect waves-light btn s12 m8"
+                      style={{ margin: "5px" }}
+                      onClick={makeAppointment}
+                    >
+                      <i className="material-icons right">send</i>Book
+                      Appointment
+                    </button>
+                    <button
+                      type="reset"
+                      className="waves-effect red waves-light btn"
+                      onClick={resetForm}
+                    >
+                      <i className="material-icons right">clear</i>
+                      Reset
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import clinic1 from "../images/clinic-1.jpeg";
+import clinic1 from "../images/clinic-1.jpg";
 import clinic2 from "../images/clinic-2.jpg";
 
 function AboutUs() {
