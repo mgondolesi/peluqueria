@@ -3,7 +3,8 @@ import { Form, Input, Select, Button, message, DatePicker, InputNumber } from 'a
 import axios from "axios";
 import M from "materialize-css/dist/js/materialize.min.js";
 import bg from "../images/clinic-1.jpg";
-import moment from 'moment'
+import moment from 'moment';
+import locale from '../../node_modules/antd/es/date-picker/locale/es_ES';
 
 const { Option } = Select;
 
@@ -101,7 +102,16 @@ function Main() {
 
   const disabledDate = (current) => {
     // Deshabilitar las fechas anteriores a hoy (incluyendo hoy)
-    return current && current < moment().startOf('day');
+    if (current && current < moment().startOf('day')) {
+      return true;
+    }
+
+    // Deshabilitar los días lunes y domingos
+    if (current && (current.day() === 0 || current.day() === 1)) {
+      return true;
+    }
+
+    return false; // Permitir el resto de las fechas
   };
 
   return (
@@ -163,6 +173,7 @@ function Main() {
                         onChange={handleChangeDate}
                         placeholder={formattedToday}
                         disabledDate={disabledDate}
+                        locale={locale}
                       />
                     )}
                   </Form.Item>
