@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import M from "materialize-css/dist/js/materialize.min.js";
-import logo from "./../images/logo.JPG";
+import logo from "./../images/logo.png";
 
 class NavBar extends Component {
   state = {

@@ -3,6 +3,7 @@ import { Form, Input, Select, Button, message, DatePicker, InputNumber } from 'a
 import axios from "axios";
 import M from "materialize-css/dist/js/materialize.min.js";
 import bg from "../images/clinic-1.jpg";
+import moment from 'moment'
 
 const { Option } = Select;
 
@@ -16,11 +17,14 @@ function Main() {
   const [successMessage, setSuccessMessage] = useState("");
   const [tiemposDisponibles, setTiemposDisponibles] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [formattedToday, setFormattedToday] = useState(""); // Nueva variable de estado
+
 
   useEffect(() => {
     M.AutoInit();
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0]; // Obtener la fecha en formato "YYYY-MM-DD"
+    setFormattedToday(formattedDate);
     fetchAvailableTimes(formattedDate); // Utilizar la fecha actual
   }, []);
 
@@ -95,16 +99,21 @@ function Main() {
     setDescription("");
   };
 
+  const disabledDate = (current) => {
+    // Deshabilitar las fechas anteriores a hoy (incluyendo hoy)
+    return current && current < moment().startOf('day');
+  };
+
   return (
     <div>
       <img src={bg} className="bg" alt="background" />
       <div className="container note">
         <div className="row">
           <div className="col s12 m6">
-            <h2>Dont lose time</h2>
-            <h2>Check your teeth now</h2>
+            <h2>No pierdas tiempo</h2>
+
             <h2>
-              Book an appointment{" "}
+              Reserva tu turno{" "}
               <i
                 className="material-icons hide-on-small-only"
                 style={{ fontSize: "38px" }}
@@ -152,6 +161,8 @@ function Main() {
                         style={{ width: '100%' }}
                         value={date}
                         onChange={handleChangeDate}
+                        placeholder={formattedToday}
+                        disabledDate={disabledDate}
                       />
                     )}
                   </Form.Item>
