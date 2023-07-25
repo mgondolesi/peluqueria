@@ -139,10 +139,10 @@ function Main() {
             </h2>
           </div>
           <div className="col s12 m6">
-            <div className="card blue-grey darken-1 center-align">
+            <div className="card blue-grey lighten-1 center-align">
               <div className="card-content white-text">
                 <Form layout="vertical" onFinish={makeAppointment}>
-                  <Form.Item label="Nombre">
+                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Nombre</span>}>
                     {loaded && (
                       <Input
                         id="full_name"
@@ -152,7 +152,7 @@ function Main() {
                       />
                     )}
                   </Form.Item>
-                  <Form.Item label="Teléfono" style={{ width: '100%' }}>
+                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Celular</span>} style={{ width: '100%' }}>
                     {loaded && (
                       <Input
                         id="cellphone"
@@ -163,7 +163,7 @@ function Main() {
                       />
                     )}
                   </Form.Item>
-                  <Form.Item label="Fecha" style={{ width: '100%' }}>
+                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Fecha</span>} style={{ width: '100%' }}>
                     {loaded && (
                       <DatePicker
                         id="date"
@@ -177,7 +177,7 @@ function Main() {
                       />
                     )}
                   </Form.Item>
-                  <Form.Item label="Hora">
+                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Hora</span>}>
                     {loaded && (
                       <Select
                         id="time"
@@ -193,7 +193,7 @@ function Main() {
                       </Select>
                     )}
                   </Form.Item>
-                  <Form.Item label="Descripción">
+                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Servicio</span>}>
                     {loaded && (
                       <Select
                         id="description"
@@ -217,11 +217,11 @@ function Main() {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      style={{ margin: "5px" }}
+                      style={{ margin: "5px", backgroundColor: "#00796B", borderColor: "#00665A", color: "#ffffff" }}
                     >
                       <i className="material-icons right">send</i>Reservar
                     </Button>
-                    <Button type="danger" htmlType="cancel" onClick={resetForm} className="red darken-1">
+                    <Button type="danger" htmlType="cancel" onClick={resetForm} style={{backgroundColor:"#c63637", borderColor:"#BA3335", color: "#ffffff"}}>
                       <i className="material-icons right">clear</i>Limpiar
                     </Button>
                   </div>
