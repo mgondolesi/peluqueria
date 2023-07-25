@@ -1,0 +1,87 @@
+/* External CSS file (dashboard.css) */
+/* You can create a new CSS file and import it into your component */
+
+.dashboard {
+  padding: 20px;
+}
+
+.card {
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.card-content p {
+  margin-bottom: 20px;
+}
+
+.card-action {
+  padding: 0 20px 20px;
+}
+
+.input-field input[type="text"]:focus + label,
+.input-field input[type="text"].valid + label {
+  color: #42a5f5;
+}
+
+.input-field input[type="text"]:focus,
+.input-field input[type="text"]:focus:not([readonly]),
+.input-field input[type="text"].valid {
+  border-bottom: 1px solid #42a5f5;
+  box-shadow: 0 1px 0 0 #42a5f5;
+}
+
+/* Table Styles */
+.responsive-table {
+  overflow: auto;
+}
+
+.table-icon {
+  margin-right: 5px;
+}
+
+.table-action-btn {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+/* Modal Styles */
+.modal-content {
+  padding: 24px;
+}
+
+.modal-footer {
+  padding: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-footer a.modal-close {
+  margin-left: 10px;
+}
+
+/* Center spinner */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Optional: Add custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #42a5f5;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #1e88e5;
+}

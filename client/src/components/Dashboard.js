@@ -2,7 +2,50 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import M from "materialize-css/dist/js/materialize.min.js";
-import spinner from "../images/loading.gif";
+import { withStyles } from "@material-ui/core/styles";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  CircularProgress,
+  Modal,
+  Typography,
+  Box,
+  Container,
+} from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import Spinner from "../images/loading.gif";
+
+const styles = (theme) => ({
+  dashboard: {
+    marginTop: theme.spacing(4),
+  },
+  searchInputs: {
+    marginBottom: theme.spacing(2),
+  },
+  tableContainer: {
+    marginBottom: theme.spacing(2),
+  },
+  spinnerContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    padding: theme.spacing(2),
+    textAlign: "center",
+  },
+  modalButtons: {
+    marginRight: theme.spacing(2),
+  },
+});
 
 class Dashboard extends Component {
   constructor(props) {
@@ -13,11 +56,14 @@ class Dashboard extends Component {
       filterDate: "",
       appointment: {},
       loading: false,
-      isAuthenticated: false
+      isAuthenticated: false,
+      deleteModalOpen: false,
+      editModalOpen: false,
     };
     this.dateInput = React.createRef();
     this.timeInput = React.createRef();
   }
+
   componentDidMount() {
     M.AutoInit();
     this.getAppointments();
@@ -28,243 +74,286 @@ class Dashboard extends Component {
     if (token) {
       this.setState({
         loading: true,
-        isAuthenticated: true
+        isAuthenticated: true,
       });
 
       axios
         .get("/appointments", {
           headers: {
             "Content-type": "application/json",
-            "x-auth-token": token
-          }
+            "x-auth-token": token,
+          },
         })
-        .then(res =>
+        .then((res) =>
           this.setState({
             appointments: res.data,
-            loading: false
+            loading: false,
           })
         )
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     } else {
       this.props.history.push("/login");
     }
   };
-  deleteAppointment = id => {
+
+  deleteAppointment = (id) => {
     axios
       .delete(`/appointment/${id}`, {
         headers: {
           "Content-type": "application/json",
-          "x-auth-token": localStorage.getItem("lcl-stg-tkn")
-        }
+          "x-auth-token": localStorage.getItem("lcl-stg-tkn"),
+        },
       })
-      .then(res => {
+      .then((res) => {
         const objToDeleteIndex = this.state.appointments.findIndex(
-          obj => obj._id === id
+          (obj) => obj._id === id
         );
         const newItems = [...this.state.appointments];
         newItems.splice(objToDeleteIndex, 1);
         this.setState({ appointments: newItems });
-        M.toast({ html: res.data.msg, classes: "green darken-1 rounded" });
+        M.toast({
+          html: res.data.msg,
+          classes: "green darken-1 rounded",
+        });
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
+
   editAppointment = () => {
     const { _id } = this.state.appointment;
     const updatedValues = {
       date: this.dateInput.current.value,
-      time: this.timeInput.current.value
+      time: this.timeInput.current.value,
     };
 
     axios
       .put(`/appointment/${_id}`, updatedValues, {
         headers: {
           "Content-type": "application/json",
-          "x-auth-token": localStorage.getItem("lcl-stg-tkn")
-        }
+          "x-auth-token": localStorage.getItem("lcl-stg-tkn"),
+        },
       })
-      .then(res => {
+      .then((res) => {
         const objToEditIndex = this.state.appointments.findIndex(
-          obj => obj._id === _id
+          (obj) => obj._id === _id
         );
         const newItems = [...this.state.appointments];
         newItems[objToEditIndex].date = updatedValues.date;
         newItems[objToEditIndex].time = updatedValues.time;
         this.setState({ appointments: newItems });
 
-        M.toast({ html: res.data.msg, classes: "green darken-1 rounded" });
+        M.toast({
+          html: res.data.msg,
+          classes: "green darken-1 rounded",
+        });
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
+
+  handleDeleteModalOpen = () => {
+    this.setState({ deleteModalOpen: true });
+  };
+
+  handleEditModalOpen = () => {
+    this.setState({ editModalOpen: true });
+  };
+
+  handleModalClose = () => {
+    this.setState({ deleteModalOpen: false, editModalOpen: false });
+  };
+
   render() {
+    const { classes } = this.props;
     let nr = 1;
-    const { filterName, filterDate, loading, appointment } = this.state;
-    const { fullname, date, time } = this.state.appointment;
+    const {
+      filterName,
+      filterDate,
+      loading,
+      appointment,
+      appointments,
+    } = this.state;
+    const { fullname, date, time } = appointment;
+
     return (
-      <div className="row dashboard">
-        <div className="col m10 offset-m1">
-          <div className="green-text darken-2">
-            <h4> Administrar Turnos</h4>
-            <h6>Turnos Totales: {this.state.appointments.length}</h6>
+      <Container className={classes.dashboard}>
+        <Box>
+          <Typography variant="h4" color="primary" gutterBottom>
+            Administrar Turnos
+          </Typography>
+          <Typography variant="h6" color="textSecondary" gutterBottom>
+            Turnos Totales: {appointments.length}
+          </Typography>
+        </Box>
+        <Box className={classes.searchInputs}>
+          <TextField
+            id="fullname"
+            label="Buscar por nombre"
+            variant="outlined"
+            value={filterName}
+            onChange={(e) => this.setState({ filterName: e.target.value })}
+          />
+          <TextField
+            id="date"
+            label="Buscar por fecha"
+            variant="outlined"
+            value={filterDate}
+            onChange={(e) => this.setState({ filterDate: e.target.value })}
+          />
+        </Box>
+        {loading ? (
+          <div className={classes.spinnerContainer}>
+            <CircularProgress />
           </div>
-          <div className="row">
-            <div className="input-field col">
-              <input
-                id="fullname"
-                type="text"
-                className="validate"
-                value={filterName}
-                onChange={e => this.setState({ filterName: e.target.value })}
-              />
-              <label htmlFor="fullname">
-                <i className="material-icons left">find_in_page</i> Buscar por nombre
-              </label>
-            </div>
-            <div className="input-field col">
-              <input
-                id="date"
-                type="text"
-                className="validate"
-                value={filterDate}
-                onChange={e => this.setState({ filterDate: e.target.value })}
-              />
-              <label htmlFor="date">Buscar por fecha</label>
-            </div>
-          </div>
-          {loading ? (
-            <div className="center">
-              <img src={spinner} alt="spiner" />
-            </div>
-          ) : (
-            <table className="striped responsive-table blue-grey darken-2 white-text">
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Nombre</th>
-                  <th>Telefono</th>
-                  <th>Fecha</th>
-                  <th>Hora</th>
-                  <th style={{ width: "300px" }}>Descripcion</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.appointments
-                  .filter(key =>
+        ) : (
+          <TableContainer component={Paper} className={classes.tableContainer}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>No.</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Telefono</TableCell>
+                  <TableCell>Fecha</TableCell>
+                  <TableCell>Hora</TableCell>
+                  <TableCell style={{ width: "300px" }}>Descripcion</TableCell>
+                  <TableCell>Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {appointments
+                  .filter((key) =>
                     key.fullname.toLowerCase().includes(filterName)
                   )
-                  .filter(key => key.date.toLowerCase().includes(filterDate))
-                  .map(appointment => (
-                    <tr key={appointment._id}>
-                      <td>{nr++}</td>
-                      <td>{appointment.fullname}</td>
-                      <td>{appointment.cellphone}</td>
-                      <td>{appointment.date}</td>
-                      <td>{appointment.time}</td>
-                      <td>{appointment.description}</td>
-                      <td>
-                        <button
-                          className="waves-effect red waves-light btn modal-trigger"
-                          href="#deleteModal"
-                          onClick={() => this.setState({ appointment })}
+                  .filter((key) => key.date.toLowerCase().includes(filterDate))
+                  .map((appointment) => (
+                    <TableRow key={appointment._id}>
+                      <TableCell>{nr++}</TableCell>
+                      <TableCell>{appointment.fullname}</TableCell>
+                      <TableCell>{appointment.cellphone}</TableCell>
+                      <TableCell>{appointment.date}</TableCell>
+                      <TableCell>{appointment.time}</TableCell>
+                      <TableCell>{appointment.description}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          startIcon={<DeleteIcon />}
+                          onClick={() => {
+                            this.setState({ appointment });
+                            this.handleDeleteModalOpen();
+                          }}
                         >
-                          <i className="material-icons right">delete</i>
-                          Cancelar{" "}
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          className="waves-effect waves-light btn modal-trigger"
-                          href="#editModal"
-                          onClick={() => this.setState({ appointment })}
+                          Cancelar
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          startIcon={<EditIcon />}
+                          onClick={() => {
+                            this.setState({ appointment });
+                            this.handleEditModalOpen();
+                          }}
                         >
-                          <i className="material-icons right">edit</i>
                           Editar
-                        </button>
-                      </td>
-                    </tr>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   ))}
-              </tbody>
-            </table>
-          )}
-          {/*Delete Modal*/}
-          <div id="deleteModal" className="modal">
-            <div className="modal-content">
-              <h4 className="center">Deleting Appointment</h4>
-              Are you sure you want to delete appointment with client:
-              <h4>{fullname}</h4>
-            </div>
-            <div className="modal-footer">
-              <Link
-                to="/dashboard"
-                className="modal-close waves-effect red waves-light btn"
-                style={{ marginRight: "10px" }}
-                onClick={this.deleteAppointment.bind(this, appointment._id)}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+        <Modal
+          open={this.state.deleteModalOpen}
+          onClose={this.handleModalClose}
+        >
+          <div className={classes.modalContent}>
+            <Typography variant="h6" color="primary">
+              Deleting Appointment
+            </Typography>
+            <Typography variant="h6">Are you sure you want to delete appointment with client:</Typography>
+            <Typography variant="h5">{fullname}</Typography>
+            <Box mt={2}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  this.handleModalClose();
+                  this.deleteAppointment(appointment._id);
+                }}
+                className={classes.modalButtons}
               >
                 Yes
-              </Link>
-              <Link
-                to="/dashboard"
-                className="modal-close waves-effect waves-light btn"
+              </Button>
+              <Button
+                variant="contained"
+                onClick={this.handleModalClose}
+                className={classes.modalButtons}
               >
                 No
-              </Link>
-            </div>
+              </Button>
+            </Box>
           </div>
-          {/* Edit Modal*/}
-          <div id="editModal" className="modal">
-            <div className="modal-content">
-              <h4 className="center">Editing Appointment</h4>
-              <h5 className="center">Client: {fullname} </h5>
-              <form>
-                <div className="row">
-                  <div className="input-field col m8 offset-m2">
-                    <i className="material-icons prefix">event</i>
-                    <input
-                      id="editDate"
-                      name="editDate"
-                      type="date"
-                      className="validate"
-                      defaultValue={date}
-                      ref={this.dateInput}
-                    />
-                    <label htmlFor="editDate">Date</label>
-                  </div>
-                  <div className="input-field col m8 offset-m2">
-                    <i className="material-icons prefix">access_time</i>
-                    <input
-                      id="editTime"
-                      name="editTime"
-                      type="time"
-                      className="validate"
-                      ref={this.timeInput}
-                      defaultValue={time}
-                    />
-                    <label htmlFor="editTime">Time</label>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div className="modal-footer">
-              <Link
-                to="/dashboard"
-                className="modal-close waves-effect red waves-light btn"
-                style={{ marginRight: "10px" }}
-                onClick={this.editAppointment}
-              >
-                Submit
-              </Link>
-              <Link
-                to="/dashboard"
-                className="modal-close waves-effect waves-light btn"
-              >
-                Back
-              </Link>{" "}
-            </div>
+        </Modal>
+        <Modal
+          open={this.state.editModalOpen}
+          onClose={this.handleModalClose}
+        >
+          <div className={classes.modalContent}>
+            <Typography variant="h6" color="primary">
+              Editing Appointment
+            </Typography>
+            <Typography variant="h5" color="secondary">
+              Client: {fullname}
+            </Typography>
+            <form>
+              <Box mt={2}>
+                <TextField
+                  id="editDate"
+                  name="editDate"
+                  type="date"
+                  variant="outlined"
+                  defaultValue={date}
+                  inputRef={this.dateInput}
+                />
+              </Box>
+              <Box mt={2}>
+                <TextField
+                  id="editTime"
+                  name="editTime"
+                  type="time"
+                  variant="outlined"
+                  inputRef={this.timeInput}
+                  defaultValue={time}
+                />
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    this.handleModalClose();
+                    this.editAppointment();
+                  }}
+                  className={classes.modalButtons}
+                >
+                  Submit
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={this.handleModalClose}
+                  className={classes.modalButtons}
+                >
+                  Back
+                </Button>
+              </Box>
+            </form>
           </div>
-        </div>
-      </div>
+        </Modal>
+      </Container>
     );
   }
 }
 
-export default Dashboard;
+export default withStyles(styles)(Dashboard);
