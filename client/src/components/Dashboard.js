@@ -22,6 +22,7 @@ import {
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Spinner from "../images/loading.gif";
+import ReactPaginate from "react-paginate";
 
 const styles = (theme) => ({
   dashboard: {
@@ -45,6 +46,12 @@ const styles = (theme) => ({
   modalButtons: {
     marginRight: theme.spacing(2),
   },
+  paginationContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: theme.spacing(2),
+  },
 });
 
 class Dashboard extends Component {
@@ -59,6 +66,8 @@ class Dashboard extends Component {
       isAuthenticated: false,
       deleteModalOpen: false,
       editModalOpen: false,
+      currentPage: 0,
+      appointmentsPerPage: 10, // Número de citas por página
     };
     this.dateInput = React.createRef();
     this.timeInput = React.createRef();
@@ -162,6 +171,10 @@ class Dashboard extends Component {
     this.setState({ deleteModalOpen: false, editModalOpen: false });
   };
 
+  handlePageChange = (selectedPage) => {
+    this.setState({ currentPage: selectedPage.selected });
+  };
+
   render() {
     const { classes } = this.props;
     let nr = 1;
@@ -171,16 +184,29 @@ class Dashboard extends Component {
       loading,
       appointment,
       appointments,
+      currentPage,
+      appointmentsPerPage,
     } = this.state;
     const { fullname, date, time } = appointment;
+
+    const indexOfLastAppointment = (currentPage + 1) * appointmentsPerPage;
+    const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+    const currentAppointments = appointments.slice(
+      indexOfFirstAppointment,
+      indexOfLastAppointment
+    );
 
     return (
       <Container className={classes.dashboard}>
         <Box>
-          <Typography variant="h4" style={{color:"#c9c9c9"}} gutterBottom>
+          <Typography variant="h4" style={{ color: "#c9c9c9" }} gutterBottom>
             Administrar Turnos
           </Typography>
-          <Typography variant="h6" style={{color:"#c9c9c9"}} gutterBottom>
+          <Typography
+            variant="h6"
+            style={{ color: "#c9c9c9" }}
+            gutterBottom
+          >
             Turnos Totales: {appointments.length}
           </Typography>
         </Box>
@@ -192,10 +218,10 @@ class Dashboard extends Component {
             value={filterName}
             onChange={(e) => this.setState({ filterName: e.target.value })}
             InputProps={{
-              style: { backgroundColor: "#c9c9c9" }, // Cambia el color del texto del input
+              style: { backgroundColor: "#c9c9c9" },
             }}
             InputLabelProps={{
-              style: { backgroundColor: "#c9c9c9" }, // Cambia el color del label del input
+              style: { backgroundColor: "#c9c9c9" },
             }}
           />
           <TextField
@@ -205,10 +231,10 @@ class Dashboard extends Component {
             value={filterDate}
             onChange={(e) => this.setState({ filterDate: e.target.value })}
             InputProps={{
-              style: { backgroundColor: "#c9c9c9" }, // Cambia el color del texto del input
+              style: { backgroundColor: "#c9c9c9" },
             }}
             InputLabelProps={{
-              style: { backgroundColor: "#c9c9c9" }, // Cambia el color del label del input
+              style: { backgroundColor: "#c9c9c9" },
             }}
           />
         </Box>
@@ -231,7 +257,7 @@ class Dashboard extends Component {
                 </TableRow>
               </TableHead>
               <TableBody style={{ backgroundColor: "#c9c9c9" }}>
-                {appointments
+                {currentAppointments
                   .filter((key) =>
                     key.fullname.toLowerCase().includes(filterName)
                   )
@@ -255,8 +281,7 @@ class Dashboard extends Component {
                           }}
                         >
                           Cancelar
-                        </Button>
-                          {' '}
+                        </Button>{" "}
                         <Button
                           variant="contained"
                           color="primary"
@@ -275,6 +300,23 @@ class Dashboard extends Component {
             </Table>
           </TableContainer>
         )}
+
+        <Box className={classes.paginationContainer}>
+          <ReactPaginate
+            previousLabel={"<"}
+            nextLabel={">"}
+            breakLabel={"..."}
+            breakClassName={"break-me"}
+            pageCount={Math.ceil(appointments.length / appointmentsPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageChange}
+            containerClassName={"pagination"}
+            subContainerClassName={"pages pagination"}
+            activeClassName={"active"}
+          />
+        </Box>
+
         <Modal
           open={this.state.deleteModalOpen}
           onClose={this.handleModalClose}
@@ -283,7 +325,9 @@ class Dashboard extends Component {
             <Typography variant="h6" color="primary">
               Deleting Appointment
             </Typography>
-            <Typography variant="h6">Are you sure you want to delete appointment with client:</Typography>
+            <Typography variant="h6">
+              Are you sure you want to delete appointment with client:
+            </Typography>
             <Typography variant="h5">{fullname}</Typography>
             <Box mt={2}>
               <Button
@@ -307,10 +351,7 @@ class Dashboard extends Component {
             </Box>
           </div>
         </Modal>
-        <Modal
-          open={this.state.editModalOpen}
-          onClose={this.handleModalClose}
-        >
+        <Modal open={this.state.editModalOpen} onClose={this.handleModalClose}>
           <div className={classes.modalContent}>
             <Typography variant="h6" color="primary">
               Editing Appointment

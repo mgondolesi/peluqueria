@@ -37,7 +37,7 @@ function Main() {
 
   const fetchAvailableTimes = async (selectedDate) => {
     try {
-      const response = await axios.get("http://localhost:5000/available-times", {
+      const response = await axios.get("http://localhost/available-times", {
         params: {
           date: selectedDate
         }
@@ -149,6 +149,7 @@ function Main() {
                         name="fullname"
                         value={fullname}
                         onChange={e => setFullname(e.target.value)}
+                        style= {{backgroundColor:'white', borderRadius:"6px"}}
                       />
                     )}
                   </Form.Item>
@@ -157,7 +158,7 @@ function Main() {
                       <Input
                         id="cellphone"
                         name="cellphone"
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', backgroundColor:'white', borderRadius:"6px" }}
                         value={cellphone}
                         onChange={e => setCellphone(e.target.value)}
                       />
