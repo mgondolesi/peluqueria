@@ -177,10 +177,10 @@ class Dashboard extends Component {
     return (
       <Container className={classes.dashboard}>
         <Box>
-          <Typography variant="h4" color="primary" gutterBottom>
+          <Typography variant="h4" style={{color:"#c9c9c9"}} gutterBottom>
             Administrar Turnos
           </Typography>
-          <Typography variant="h6" color="textSecondary" gutterBottom>
+          <Typography variant="h6" style={{color:"#c9c9c9"}} gutterBottom>
             Turnos Totales: {appointments.length}
           </Typography>
         </Box>
@@ -191,6 +191,12 @@ class Dashboard extends Component {
             variant="outlined"
             value={filterName}
             onChange={(e) => this.setState({ filterName: e.target.value })}
+            InputProps={{
+              style: { backgroundColor: "#c9c9c9" }, // Cambia el color del texto del input
+            }}
+            InputLabelProps={{
+              style: { backgroundColor: "#c9c9c9" }, // Cambia el color del label del input
+            }}
           />
           <TextField
             id="date"
@@ -198,6 +204,12 @@ class Dashboard extends Component {
             variant="outlined"
             value={filterDate}
             onChange={(e) => this.setState({ filterDate: e.target.value })}
+            InputProps={{
+              style: { backgroundColor: "#c9c9c9" }, // Cambia el color del texto del input
+            }}
+            InputLabelProps={{
+              style: { backgroundColor: "#c9c9c9" }, // Cambia el color del label del input
+            }}
           />
         </Box>
         {loading ? (
@@ -207,7 +219,7 @@ class Dashboard extends Component {
         ) : (
           <TableContainer component={Paper} className={classes.tableContainer}>
             <Table>
-              <TableHead>
+              <TableHead style={{ backgroundColor: "#00796b" }}>
                 <TableRow>
                   <TableCell>No.</TableCell>
                   <TableCell>Nombre</TableCell>
@@ -218,7 +230,7 @@ class Dashboard extends Component {
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
+              <TableBody style={{ backgroundColor: "#c9c9c9" }}>
                 {appointments
                   .filter((key) =>
                     key.fullname.toLowerCase().includes(filterName)
@@ -244,8 +256,7 @@ class Dashboard extends Component {
                         >
                           Cancelar
                         </Button>
-                      </TableCell>
-                      <TableCell>
+                          {' '}
                         <Button
                           variant="contained"
                           color="primary"
