@@ -71,9 +71,9 @@ app.post("/add-appointment", (req, res) => {
     // add to database
     newAppointment
       .save()
-      .then(appointment => res.json({ msg: "Appointment added succesfully" }))
+      .then(appointment => res.json({ msg: "Turno reservado correctamente" }))
       .catch(err =>
-        res.status(500).json({ msg: "Something went wrong. Please try again." })
+        res.status(500).json({ msg: "Algo salio mal! Intente nuevamente" })
       );
   };
 });
