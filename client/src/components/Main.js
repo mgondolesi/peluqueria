@@ -37,7 +37,7 @@ function Main() {
 
   const fetchAvailableTimes = async (selectedDate) => {
     try {
-      const response = await axios.get("http://localhost:5000/available-times", {
+      const response = await axios.get("/available-times", {
         params: {
           date: selectedDate
         }
