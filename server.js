@@ -7,6 +7,9 @@ const User = require("./models/user");
 const auth = require("./middleware/auth");
 require("dotenv").config();
 const cors = require("cors");
+const nodemailer = require("nodemailer");
+const axios = require("axios");
+
 
 const app = express();
 app.use(cors());
@@ -40,8 +43,8 @@ app.get("/appointments", auth, (req, res) => {
 //@desc  Add new appointment
 //@access Public
 app.post("/add-appointment", (req, res) => {
-  const { fullname, cellphone, date, time, description } = req.body;
-  if (!fullname || !cellphone || !date || !time || !description) {
+  const { fullname, cellphone, date, time, description, email } = req.body;
+  if (!fullname || !cellphone || !date || !time || !description || !email) {
     return res.status(400).json({ msg: "All fields are required" });
   }
 
@@ -71,11 +74,33 @@ app.post("/add-appointment", (req, res) => {
     // add to database
     newAppointment
       .save()
-      .then(appointment => res.json({ msg: "Turno reservado correctamente" }))
-      .catch(err =>
-        res.status(500).json({ msg: "Algo salio mal! Intente nuevamente" })
-      );
+      .then(appointment => {
+        // Aquí, después de guardar el nuevo turno, envía el correo electrónico
+        const recipientEmail = email;
+        const subject = "Nuevo turno reservado";
+        const message = `Se ha reservado un nuevo turno para ${fullname} el día ${date} a las ${time}.`;
+  
+        // Realiza la solicitud HTTP a tu endpoint "/send-email" para enviar el correo
+        axios.post('http://localhost:5000/send-email', {
+          recipientEmail,
+          subject,
+          message
+        })
+        .then(response => {
+          console.log("Correo electrónico enviado:", response.data.msg);
+          res.json({ msg: "Turno reservado correctamente" });
+        })
+        .catch(error => {
+          console.error("Error al enviar el correo:", error);
+          res.status(500).json({ msg: "Error al enviar el correo. Intente nuevamente." });
+        });
+      })
+      .catch(err => {
+        console.error("Error al guardar el nuevo turno:", err);
+        res.status(500).json({ msg: "Algo salio mal al guardar el turno. Intente nuevamente.", error: err });
+      });
   };
+
 });
 
 //@route PUT /appointment/:id
@@ -193,6 +218,46 @@ app.post("/login", (req, res) => {
       res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
   };
+
+  app.post("/send-email", (req, res) => {
+    const { recipientEmail, subject, message } = req.body;
+  
+    if (!recipientEmail || !subject || !message) {
+      return res.status(400).json({ msg: "All fields are required" });
+    }
+  
+    // Configura el transporte del correo electrónico (SMTP)
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER, // Cambiar a tu nombre de usuario de correo
+        pass: process.env.GMAIL_PASSWORD // Cambiar a tu contraseña de correo
+      }
+    });
+  
+    // Define el contenido del correo electrónico en formato HTML con la imagen
+    const imageSrc = "https://static.vecteezy.com/system/resources/previews/009/664/151/original/scissor-icon-transparent-free-png.png";
+    const mailOptions = {
+      from: 'mgondolesi@gmail.com', // Cambiar a tu dirección de correo
+      to: recipientEmail,
+      subject: subject,
+      html: `<h1>${subject}</h1><p>${message}</p><img src="${imageSrc}" alt="Tijera" style="width: 100%; max-width: 600px;">`
+    };
+  
+    // Envía el correo electrónico
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).json({ msg: 'Error al enviar el correo. Intente nuevamente.' });
+      } else {
+        console.log('Correo electrónico enviado:', info.response);
+        res.json({ msg: 'Correo electrónico enviado exitosamente.' });
+      }
+    });
+  });
+  
+  
+  
 
 //@route GET /available-times
 //@desc  Get available times

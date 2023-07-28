@@ -19,6 +19,7 @@ function Main() {
   const [tiemposDisponibles, setTiemposDisponibles] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [formattedToday, setFormattedToday] = useState(""); // Nueva variable de estado
+  const [email, setEmail] = useState("");
 
 
   useEffect(() => {
@@ -73,7 +74,8 @@ function Main() {
       cellphone,
       date: date ? date.format("YYYY-MM-DD") : "",
       time,
-      description
+      description, 
+      email
     };
     axios
       .post("/add-appointment", newAppointment)
@@ -84,6 +86,7 @@ function Main() {
         setDate(null);
         setTime("");
         setDescription("");
+        setEmail("");
         message.success(successMessage, 2);
       })
       .catch(error => {
@@ -161,6 +164,17 @@ function Main() {
                         style={{ width: '100%', backgroundColor:'white', borderRadius:"6px" }}
                         value={cellphone}
                         onChange={e => setCellphone(e.target.value)}
+                      />
+                    )}
+                  </Form.Item>
+                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Correo Electrónico</span>}>
+                    {loaded && (
+                      <Input
+                        id="email"
+                        name="email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        style= {{backgroundColor:'white', borderRadius:"6px"}}
                       />
                     )}
                   </Form.Item>
