@@ -196,7 +196,6 @@ app.post("/login", (req, res) => {
       process.env.jwtSecret,
       { expiresIn: 3600 },
       (err, token) => {
-        console.log(err);
         if (err) return res.status(400).json({ msg: "Something went wrong" });
         res.json({
           token,

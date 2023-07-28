@@ -14,6 +14,13 @@ class Login extends Component {
     M.AutoInit();
   }
 
+  handleKeyPress = (event) => {
+    if (event.keyCode === 13) {
+      // 13 es el código de la tecla Enter
+      this.login();
+    }
+  };
+
   login = () => {
     const { username, password } = this.state;
     const newUser = { username, password };
@@ -74,6 +81,7 @@ class Login extends Component {
                       onChange={e =>
                         this.setState({ password: e.target.value })
                       }
+                      onKeyDown={this.handleKeyPress}
                     />
                     <label htmlFor="password">Password</label>
                   </div>
