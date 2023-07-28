@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Select, Button, message, DatePicker, InputNumber } from 'antd';
+import { Form, Input, Select, Button, message, DatePicker, Spin } from 'antd';
 import axios from "axios";
 import M from "materialize-css/dist/js/materialize.min.js";
 import bg from "../images/clinic-1.jpg";
@@ -14,12 +14,12 @@ function Main() {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [tiemposDisponibles, setTiemposDisponibles] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [formattedToday, setFormattedToday] = useState(""); // Nueva variable de estado
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
 
   useEffect(() => {
@@ -69,6 +69,7 @@ function Main() {
 
   const makeAppointment = (e) => {
     //e.preventDefault();
+    setLoading(true);
     const newAppointment = {
       fullname,
       cellphone,
@@ -80,18 +81,18 @@ function Main() {
     axios
       .post("/add-appointment", newAppointment)
       .then(result => {
-        setSuccessMessage(result.data.msg);
         setFullname("");
         setCellphone("");
         setDate(null);
         setTime("");
         setDescription("");
         setEmail("");
-        message.success(successMessage, 2);
+        setLoading(false);
+        message.success(result.data.msg, 2);
       })
       .catch(error => {
-        setErrorMessage(error.response.data.msg);
-        message.error(errorMessage, 2);
+        setLoading(true);
+        message.error(error.response.data.msg, 2);
       });
   };
 
@@ -118,6 +119,7 @@ function Main() {
   };
 
   return (
+    <Spin spinning={loading}>
     <div>
       <img src={bg} className="bg" alt="background" />
       <div className="container note">
@@ -247,6 +249,7 @@ function Main() {
         </div>
       </div>
     </div>
+    </Spin>
   );
 }
 
