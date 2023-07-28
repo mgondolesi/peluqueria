@@ -17,62 +17,135 @@ const getAppointments = (req, res) => {
 const addAppointment = (req, res) => {
     const { fullname, cellphone, date, time, description, email } = req.body;
     if (!fullname || !cellphone || !date || !time || !description || !email) {
-        return res.status(400).json({ msg: "All fields are required" });
+        return res.status(400).json({ msg: "Se necesitan todos los campos" });
     }
 
-    const validateDateTime = async (date, time) => {
-        const existingAppointment = await Appointment.findOne({ date, time });
-        if (existingAppointment) {
-            res
-                .status(400)
-                .json({
-                    msg: "Please choose another date or time. This one is not available."
-                });
+    let nextHour;
+    const validateDateTime = async (date, time, description) => {
+
+        if (description == "Color") {
+            const existingAppointment = await Appointment.findOne({ date, time });
+            const [hours, minutes] = time.split(":").map(Number);
+            const originalDate = new Date();
+
+            originalDate.setHours(hours);
+            originalDate.setMinutes(minutes);
+            originalDate.setHours(originalDate.getHours() + 1);
+
+            nextHour = originalDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            const nextHourAvailable = await Appointment.findOne({ date, time: nextHour });
+            if (existingAppointment || nextHourAvailable) {
+                res.status(400).json({
+                    msg: "Ese horario no está disponible."
+                })
+            } else {
+                saveAppointment();
+            }
+
         } else {
-            saveAppointment();
+
+            const existingAppointment = await Appointment.findOne({ date, time });
+            if (existingAppointment) {
+                res
+                    .status(400)
+                    .json({
+                        msg: "Ese horario no está disponible."
+                    });
+            } else {
+                saveAppointment();
+            }
         }
     };
 
-    validateDateTime(date, time);
+    validateDateTime(date, time, description);
     const saveAppointment = () => {
-        //Construct appointment
-        const newAppointment = new Appointment({
-            fullname,
-            cellphone,
-            date,
-            time,
-            description
-        });
-        // add to database
-        newAppointment
-            .save()
-            .then(appointment => {
-                // Aquí, después de guardar el nuevo turno, envía el correo electrónico
-                const recipientEmail = email;
-                const subject = "Nuevo turno reservado";
-                const message = `Se ha reservado un nuevo turno para <strong>${fullname}</strong> el día <strong>${date}</strong> a las <strong>${time}</strong>.`;
-
-                // Realiza la solicitud HTTP a tu endpoint "/send-email" para enviar el correo
-                axios.post('http://localhost:5000/send-email', {
-                    recipientEmail,
-                    subject,
-                    message
-                })
-                    .then(response => {
-                        console.log("Correo electrónico enviado:", response.data.msg);
-                        res.json({ msg: "Turno reservado correctamente" });
-                    })
-                    .catch(error => {
-                        console.error("Error al enviar el correo:", error);
-                        res.status(500).json({ msg: "Error al enviar el correo. Intente nuevamente." });
-                    });
-            })
-            .catch(err => {
-                console.error("Error al guardar el nuevo turno:", err);
-                res.status(500).json({ msg: "Algo salio mal al guardar el turno. Intente nuevamente.", error: err });
+        if (description == "Color") {
+            const newAppointment = new Appointment({
+                fullname,
+                cellphone,
+                date,
+                time,
+                description,
+                email
             });
-    };
+            const newAppointment2 = new Appointment({
+                fullname,
+                cellphone,
+                date,
+                time: nextHour,
+                description,
+                email
+            });
 
+            newAppointment
+                .save();
+            newAppointment2.save()
+                .then(appointment => {
+                    // Aquí, después de guardar el nuevo turno, envía el correo electrónico
+                    const recipientEmail = email;
+                    const subject = "Nuevo turno reservado";
+                    const message = `Se ha reservado un nuevo turno para <strong>${fullname}</strong> el día <strong>${date}</strong> a las <strong>${time}</strong>.`;
+
+                    // Realiza la solicitud HTTP a tu endpoint "/send-email" para enviar el correo
+                    axios.post('http://localhost:5000/send-email', {
+                        recipientEmail,
+                        subject,
+                        message
+                    })
+                        .then(response => {
+                            console.log("Correo electrónico enviado:", response.data.msg);
+                            res.json({ msg: "Turno reservado correctamente" });
+                        })
+                        .catch(error => {
+                            console.error("Error al enviar el correo:", error);
+                            res.status(500).json({ msg: "Error al enviar el correo. Intente nuevamente." });
+                        });
+                })
+                .catch(err => {
+                    console.error("Error al guardar el nuevo turno:", err);
+                    res.status(500).json({ msg: "Algo salio mal al guardar el turno. Intente nuevamente.", error: err });
+                });
+
+        } else {
+            //Construct appointment
+            const newAppointment = new Appointment({
+                fullname,
+                cellphone,
+                date,
+                time,
+                description,
+                email
+            });
+            // add to database
+            newAppointment
+                .save()
+                .then(appointment => {
+                    // Aquí, después de guardar el nuevo turno, envía el correo electrónico
+                    const recipientEmail = email;
+                    const subject = "Nuevo turno reservado";
+                    const message = `Se ha reservado un nuevo turno para <strong>${fullname}</strong> el día <strong>${date}</strong> a las <strong>${time}</strong>.`;
+
+                    // Realiza la solicitud HTTP a tu endpoint "/send-email" para enviar el correo
+                    axios.post('http://localhost:5000/send-email', {
+                        recipientEmail,
+                        subject,
+                        message
+                    })
+                        .then(response => {
+                            console.log("Correo electrónico enviado:", response.data.msg);
+                            res.json({ msg: "Turno reservado correctamente" });
+                        })
+                        .catch(error => {
+                            console.error("Error al enviar el correo:", error);
+                            res.status(500).json({ msg: "Error al enviar el correo. Intente nuevamente." });
+                        });
+                })
+                .catch(err => {
+                    console.error("Error al guardar el nuevo turno:", err);
+                    res.status(500).json({ msg: "Algo salio mal al guardar el turno. Intente nuevamente.", error: err });
+                });
+        };
+    }
 };
 
 // Controlador para editar una cita
@@ -110,33 +183,33 @@ const deleteAppointment = (req, res) => {
 
 const getTurnosDisponibles = (req, res) => {
         const { date } = req.query;
-        // Verificar si el parámetro 'date' está presente
+    // Verificar si el parámetro 'date' está presente
         if (!date) {
           return res.status(400).json({ msg: "Date is required." });
-        }
-        // Obtener todos los horarios disponibles desde las 08:00 hasta las 20:00
-        const allTimes = [];
-        let time = new Date();
-        time.setHours(8, 0, 0); // Establecer el horario inicial a las 08:00
-      
-        while (time.getHours() < 20) {
-          allTimes.push(time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
-          time.setMinutes(time.getMinutes() + 30); // Añadir 30 minutos
-        }
-      
+    }
+    // Obtener todos los horarios disponibles desde las 08:00 hasta las 20:00
+    const allTimes = [];
+    let time = new Date();
+    time.setHours(8, 0, 0); // Establecer el horario inicial a las 08:00
+
+    while (time.getHours() < 20) {
+        allTimes.push(time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+        time.setMinutes(time.getMinutes() + 30); // Añadir 30 minutos
+    }
+
         Appointment.find({date: req.query.date})
           .distinct("time") // Obtén los valores únicos de la propiedad "time"
           .then(occupiedTimes => {
             // Filtrar los tiempos ocupados de los horarios disponibles
             const availableTimes = allTimes.filter(time => !occupiedTimes.includes(time));
-            res.json({ times: availableTimes });
+        res.json({ times: availableTimes });
           })
           .catch(err =>
             res
               .status(500)
               .json({ msg: "Could not get the available times. Please try again." })
           );
-      };
+};
 
 // Exporta los controladores para usarlos en "routes.js"
 module.exports = {
