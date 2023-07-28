@@ -154,7 +154,7 @@ function Main() {
                         name="fullname"
                         value={fullname}
                         onChange={e => setFullname(e.target.value)}
-                        style= {{backgroundColor:'white', borderRadius:"6px"}}
+                        style= {{backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
                       />
                     )}
                   </Form.Item>
@@ -163,7 +163,7 @@ function Main() {
                       <Input
                         id="cellphone"
                         name="cellphone"
-                        style={{ width: '100%', backgroundColor:'white', borderRadius:"6px" }}
+                        style={{ width: '100%', backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
                         value={cellphone}
                         onChange={e => setCellphone(e.target.value)}
                       />
@@ -176,7 +176,7 @@ function Main() {
                         name="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        style= {{backgroundColor:'white', borderRadius:"6px"}}
+                        style= {{backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
                       />
                     )}
                   </Form.Item>

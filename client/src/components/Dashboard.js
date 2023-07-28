@@ -23,9 +23,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Spinner from "../images/loading.gif";
 import ReactPaginate from "react-paginate";
+import "../dashboard.css";
 
 // Importa los componentes del DatePicker de antd
-import { DatePicker } from "antd";
+import { DatePicker, Input } from "antd";
 //import "antd/dist/antd.css";
 
 const modalStyles = {
@@ -42,6 +43,19 @@ const modalStyles = {
   maxWidth: "600px",
   width: "80%", // Ajusta el ancho del modal
   borderRadius: "20px",
+};
+
+const inputStyle = {
+  backgroundColor: "#c9c9c9", 
+  marginLeft: "20px", 
+  borderRadius:"6px", 
+  height:"2.5rem", 
+  width:"20%",
+  fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';",
+  boxSizing: "border-box",
+  padding: "4px 11px 4px",
+  fontSize: "14px",
+  border: "1px solid #d9d9d9",
 };
 
 const styles = (theme) => ({
@@ -216,7 +230,7 @@ class Dashboard extends Component {
           : true
       )
       .filter((key) =>
-        key.fullname.toLowerCase().includes(filterName)
+        key.fullname.toLowerCase().includes(filterName.toLowerCase())
       );
 
     // Ordenar por hora antes de mostrar los appointments
@@ -246,24 +260,33 @@ class Dashboard extends Component {
           </Typography>
         </Box>
         <Box className={classes.searchInputs}>
-          <TextField
+          {/* <TextField
             id="fullname"
             label="Buscar por nombre"
             variant="outlined"
             value={filterName}
             onChange={(e) => this.setState({ filterName: e.target.value })}
             InputProps={{
-              style: { backgroundColor: "#c9c9c9" },
+              style: { backgroundColor: "#c9c9c9", height:"2.3rem" },
             }}
             InputLabelProps={{
-              style: { backgroundColor: "#c9c9c9" },
+              style: { backgroundColor: "#c9c9c9", height:"2.3rem" },
             }}
+          /> */}
+          <Input
+            id="fullname"
+            label="Buscar por nombre"
+            placeholder="Buscar por nombre"
+            className="input-antd"
+            style={inputStyle}
+            value={filterName}
+            onChange={(e) => this.setState({ filterName: e.target.value })}
           />
-
+          <br></br>
           {/* Reemplaza el TextField de fecha con el DatePicker de antd */}
           <DatePicker
             id="date"
-            style={{ backgroundColor: "#c9c9c9", marginLeft: "20px" }}
+            style={{ backgroundColor: "#c9c9c9", marginLeft: "20px", borderRadius:"6px", height:"2.5rem" }}
             value={filterDate}
             onChange={(value) => this.setState({ filterDate: value })}
           />
