@@ -28,6 +28,22 @@ import ReactPaginate from "react-paginate";
 import { DatePicker } from "antd";
 //import "antd/dist/antd.css";
 
+const modalStyles = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: "#c9c9c9", // Fondo blanco
+  border: "0px solid #000",
+  boxShadow: 24,
+  padding: "16px",
+  outline: "none", // Elimina el borde alrededor del modal
+  minWidth: "300px",
+  maxWidth: "600px",
+  width: "80%", // Ajusta el ancho del modal
+  borderRadius: "20px",
+};
+
 const styles = (theme) => ({
   dashboard: {
     marginTop: theme.spacing(4),
@@ -331,15 +347,12 @@ class Dashboard extends Component {
           open={this.state.deleteModalOpen}
           onClose={this.handleModalClose}
         >
-          <div className={classes.modalContent}>
-            <Typography variant="h6" color="primary">
-              Deleting Appointment
+          <div style={modalStyles}>
+            <Typography style={{ textAlign: "center" }} variant="h6">
+              Estas seguro que deseas cancelar el turno de:
             </Typography>
-            <Typography variant="h6">
-              Are you sure you want to delete appointment with client:
-            </Typography>
-            <Typography variant="h5">{fullname}</Typography>
-            <Box mt={2}>
+            <Typography style={{ textAlign: "center" }} variant="h5">{fullname}</Typography>
+            <Box mt={2} style={{ textAlign: "center" }}>
               <Button
                 variant="contained"
                 color="secondary"
@@ -349,7 +362,7 @@ class Dashboard extends Component {
                 }}
                 className={classes.modalButtons}
               >
-                Yes
+                Si
               </Button>
               <Button
                 variant="contained"
@@ -362,15 +375,15 @@ class Dashboard extends Component {
           </div>
         </Modal>
         <Modal open={this.state.editModalOpen} onClose={this.handleModalClose}>
-          <div className={classes.modalContent}>
-            <Typography variant="h6" color="primary">
-              Editing Appointment
+          <div style={modalStyles}>
+            <Typography style={{ textAlign: "center" }} variant="h6">
+              Estás modificando el turno de: 
             </Typography>
-            <Typography variant="h5" color="secondary">
-              Client: {fullname}
+            <Typography style={{ textAlign: "center" }} variant="h5">
+              {fullname}
             </Typography>
             <form>
-              <Box mt={2}>
+              <Box mt={2} style={{ textAlign: "center" }}>
                 <TextField
                   id="editDate"
                   name="editDate"
@@ -380,7 +393,7 @@ class Dashboard extends Component {
                   inputRef={this.dateInput}
                 />
               </Box>
-              <Box mt={2}>
+              <Box mt={2} style={{ textAlign: "center" }}>
                 <TextField
                   id="editTime"
                   name="editTime"
@@ -390,7 +403,7 @@ class Dashboard extends Component {
                   defaultValue={time}
                 />
               </Box>
-              <Box mt={2}>
+              <Box mt={2} style={{ textAlign: "center" }}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -400,20 +413,20 @@ class Dashboard extends Component {
                   }}
                   className={classes.modalButtons}
                 >
-                  Submit
+                  Modificar
                 </Button>
                 <Button
                   variant="contained"
                   onClick={this.handleModalClose}
                   className={classes.modalButtons}
                 >
-                  Back
+                  Atrás
                 </Button>
               </Box>
             </form>
           </div>
         </Modal>
-        
+
       </Container>
     );
   }
