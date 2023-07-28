@@ -203,9 +203,14 @@ class Dashboard extends Component {
         key.fullname.toLowerCase().includes(filterName)
       );
 
+    // Ordenar por hora antes de mostrar los appointments
+    const sortedAppointments = filteredAppointments.sort((a, b) =>
+      a.time.localeCompare(b.time)
+    );
+
     const indexOfLastAppointment = (currentPage + 1) * appointmentsPerPage;
     const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
-    const currentAppointments = filteredAppointments.slice(
+    const currentAppointments = sortedAppointments.slice(
       indexOfFirstAppointment,
       indexOfLastAppointment
     );
