@@ -78,7 +78,7 @@ app.post("/add-appointment", (req, res) => {
         // Aquí, después de guardar el nuevo turno, envía el correo electrónico
         const recipientEmail = email;
         const subject = "Nuevo turno reservado";
-        const message = `Se ha reservado un nuevo turno para <strong>${fullname}</strong> el día <strong>${date}</strong> a las <strong>${time}</strong>.`;
+        const message = `Se ha reservado un nuevo turno para ${fullname} el día ${date} a las ${time}.`;
   
         // Realiza la solicitud HTTP a tu endpoint "/send-email" para enviar el correo
         axios.post('http://localhost:5000/send-email', {
@@ -232,24 +232,19 @@ app.post("/login", (req, res) => {
       auth: {
         user: process.env.GMAIL_USER, // Cambiar a tu nombre de usuario de correo
         pass: process.env.GMAIL_PASSWORD // Cambiar a tu contraseña de correo
+      },
+      tls: {
+        rejectUnauthorized: false // Desactiva la verificación del certificado SSL
       }
     });
   
     // Define el contenido del correo electrónico en formato HTML con la imagen
-    const imageSrc = 'http://186.138.96.77:3000/static/media/logo.30bd7b947921d94d3131.png';
+    const imageSrc = "https://static.vecteezy.com/system/resources/previews/009/664/151/original/scissor-icon-transparent-free-png.png";
     const mailOptions = {
       from: 'mgondolesi@gmail.com', // Cambiar a tu dirección de correo
       to: recipientEmail,
       subject: subject,
-      html: `
-      <div padding: 20px; font-family: Arial, sans-serif;">
-        <h1>${subject}</h1>
-        <p style="color: #333; font-size: 16px;">${message}</p>
-        <img src="${imageSrc}" alt="Tijera" style="width: 100%; max-width: 600px;">
-        <p style="color: #555; font-size: 14px;">Gracias por usar nuestro servicio.</p>
-        <p style="color: #555; font-size: 14px;">Salvador Estilistas</p>
-      </div>
-    `
+      html: `<h1>${subject}</h1><p>${message}</p><img src="${imageSrc}" alt="Tijera" style="width: 100%; max-width: 600px;">`
     };
   
     // Envía el correo electrónico

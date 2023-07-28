@@ -24,6 +24,10 @@ import EditIcon from "@material-ui/icons/Edit";
 import Spinner from "../images/loading.gif";
 import ReactPaginate from "react-paginate";
 
+// Importa los componentes del DatePicker de antd
+import { DatePicker } from "antd";
+//import "antd/dist/antd.css";
+
 const styles = (theme) => ({
   dashboard: {
     marginTop: theme.spacing(4),
@@ -60,7 +64,7 @@ class Dashboard extends Component {
     this.state = {
       appointments: [],
       filterName: "",
-      filterDate: "",
+      filterDate: null, // Cambiar el valor inicial a null
       appointment: {},
       loading: false,
       isAuthenticated: false,
@@ -224,20 +228,16 @@ class Dashboard extends Component {
               style: { backgroundColor: "#c9c9c9" },
             }}
           />
-          <TextField
+
+          {/* Reemplaza el TextField de fecha con el DatePicker de antd */}
+          <DatePicker
             id="date"
-            label="Buscar por fecha"
-            variant="outlined"
+            style={{ backgroundColor: "#c9c9c9", marginLeft: "20px" }}
             value={filterDate}
-            onChange={(e) => this.setState({ filterDate: e.target.value })}
-            InputProps={{
-              style: { backgroundColor: "#c9c9c9" },
-            }}
-            InputLabelProps={{
-              style: { backgroundColor: "#c9c9c9" },
-            }}
+            onChange={(value) => this.setState({ filterDate: value })}
           />
         </Box>
+
         {loading ? (
           <div className={classes.spinnerContainer}>
             <CircularProgress />
@@ -261,7 +261,13 @@ class Dashboard extends Component {
                   .filter((key) =>
                     key.fullname.toLowerCase().includes(filterName)
                   )
-                  .filter((key) => key.date.toLowerCase().includes(filterDate))
+                  .filter((key) =>
+                    filterDate
+                      ? key.date.includes(
+                          filterDate.format("YYYY-MM-DD")
+                        )
+                      : true
+                  )
                   .map((appointment) => (
                     <TableRow key={appointment._id}>
                       <TableCell>{nr++}</TableCell>
