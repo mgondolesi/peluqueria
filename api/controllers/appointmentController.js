@@ -181,11 +181,11 @@ const deleteAppointment = (req, res) => {
         .catch(err => res.status(404).json({ msg: "Appointment not found" }));
 };
 
-const getTurnosDisponibles = (req, res) => {
-        const { date } = req.query;
+const getTurnosDisponibles = async (req, res) => {
+    const { date, description } = req.query;
     // Verificar si el parámetro 'date' está presente
-        if (!date) {
-          return res.status(400).json({ msg: "Date is required." });
+    if (!date || !description) {
+        return res.status(400).json({ msg: "Se requiere Fecha y Servicio" });
     }
     // Obtener todos los horarios disponibles desde las 08:00 hasta las 20:00
     const allTimes = [];
@@ -197,18 +197,30 @@ const getTurnosDisponibles = (req, res) => {
         time.setMinutes(time.getMinutes() + 30); // Añadir 30 minutos
     }
 
-        Appointment.find({date: req.query.date})
-          .distinct("time") // Obtén los valores únicos de la propiedad "time"
-          .then(occupiedTimes => {
-            // Filtrar los tiempos ocupados de los horarios disponibles
-            const availableTimes = allTimes.filter(time => !occupiedTimes.includes(time));
-        res.json({ times: availableTimes });
-          })
-          .catch(err =>
-            res
-              .status(500)
-              .json({ msg: "Could not get the available times. Please try again." })
-          );
+    try {
+        const occupiedTimes = await Appointment.find({ date: req.query.date }).distinct("time");
+        // Filtrar los tiempos ocupados de los horarios disponibles
+        const availableTimes = allTimes.filter(time => !occupiedTimes.includes(time));
+
+        // Si la descripción es igual a "Color", filtrar los horarios disponibles que tienen un horario siguiente disponible
+        if (description === "Color") {
+            const availableNextHour = availableTimes.filter((time) => {
+                const [hours, minutes] = time.split(":").map(Number);
+                const originalDate = new Date();
+                originalDate.setHours(hours);
+                originalDate.setMinutes(minutes);
+                originalDate.setHours(originalDate.getHours() + 1);
+                nextHour = originalDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                return !occupiedTimes.includes(time) && !occupiedTimes.includes(nextHour);
+            });
+
+            res.json({ times: availableNextHour });
+        } else {
+            res.json({ times: availableTimes });
+        }
+    } catch (err) {
+        res.status(500).json({ msg: "Could not get the available times. Please try again." });
+    }
 };
 
 // Exporta los controladores para usarlos en "routes.js"
