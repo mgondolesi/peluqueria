@@ -327,7 +327,93 @@ class Dashboard extends Component {
           />
         </Box>
 
-        {/* Resto del código sin cambios */}
+        <Modal
+          open={this.state.deleteModalOpen}
+          onClose={this.handleModalClose}
+        >
+          <div className={classes.modalContent}>
+            <Typography variant="h6" color="primary">
+              Deleting Appointment
+            </Typography>
+            <Typography variant="h6">
+              Are you sure you want to delete appointment with client:
+            </Typography>
+            <Typography variant="h5">{fullname}</Typography>
+            <Box mt={2}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  this.handleModalClose();
+                  this.deleteAppointment(appointment._id);
+                }}
+                className={classes.modalButtons}
+              >
+                Yes
+              </Button>
+              <Button
+                variant="contained"
+                onClick={this.handleModalClose}
+                className={classes.modalButtons}
+              >
+                No
+              </Button>
+            </Box>
+          </div>
+        </Modal>
+        <Modal open={this.state.editModalOpen} onClose={this.handleModalClose}>
+          <div className={classes.modalContent}>
+            <Typography variant="h6" color="primary">
+              Editing Appointment
+            </Typography>
+            <Typography variant="h5" color="secondary">
+              Client: {fullname}
+            </Typography>
+            <form>
+              <Box mt={2}>
+                <TextField
+                  id="editDate"
+                  name="editDate"
+                  type="date"
+                  variant="outlined"
+                  defaultValue={date}
+                  inputRef={this.dateInput}
+                />
+              </Box>
+              <Box mt={2}>
+                <TextField
+                  id="editTime"
+                  name="editTime"
+                  type="time"
+                  variant="outlined"
+                  inputRef={this.timeInput}
+                  defaultValue={time}
+                />
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    this.handleModalClose();
+                    this.editAppointment();
+                  }}
+                  className={classes.modalButtons}
+                >
+                  Submit
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={this.handleModalClose}
+                  className={classes.modalButtons}
+                >
+                  Back
+                </Button>
+              </Box>
+            </form>
+          </div>
+        </Modal>
+        
       </Container>
     );
   }
