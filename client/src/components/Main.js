@@ -91,7 +91,7 @@ function Main() {
         message.success(result.data.msg, 2);
       })
       .catch(error => {
-        setLoading(true);
+        setLoading(false);
         message.error(error.response.data.msg, 2);
       });
   };
