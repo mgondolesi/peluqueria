@@ -31,16 +31,17 @@ function Main() {
   }, []);
 
   useEffect(() => {
-    if (date) {
-      fetchAvailableTimes(date.format("YYYY-MM-DD"));
+    if (date || description) {
+      fetchAvailableTimes(date?.format("YYYY-MM-DD"), description);
     }
-  }, [date]);
+  }, [date,description]);
 
-  const fetchAvailableTimes = async (selectedDate) => {
+  const fetchAvailableTimes = async (selectedDate, selectedService) => {
     try {
       const response = await axios.get("/available-times", {
         params: {
-          date: selectedDate
+          date: selectedDate,
+          description: selectedService
         }
       });
       setTiemposDisponibles(response.data.times);
