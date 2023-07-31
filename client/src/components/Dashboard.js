@@ -23,6 +23,8 @@ import EditIcon from "@material-ui/icons/Edit";
 // import Spinner from "../images/loading.gif";
 import ReactPaginate from "react-paginate";
 import "../dashboard.css";
+import moment from "moment";
+
 
 // Importa los componentes del DatePicker de antd
 import { DatePicker, Input } from "antd";
@@ -49,7 +51,7 @@ const inputStyle = {
   borderRadius: "6px",
   height: "2.5rem",
   width: "20%",
-  fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';",
+  fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'",
   boxSizing: "border-box",
   padding: "4px 11px 4px",
   fontSize: "14px",
@@ -92,7 +94,7 @@ class Dashboard extends Component {
     this.state = {
       appointments: [],
       filterName: "",
-      filterDate: null, // Cambiar el valor inicial a null
+      filterDate: moment(), // Cambiar el valor inicial a null
       appointment: {},
       loading: false,
       isAuthenticated: false,
@@ -242,7 +244,7 @@ class Dashboard extends Component {
       indexOfFirstAppointment,
       indexOfLastAppointment
     );
-
+    
     return (
       <Container className={classes.dashboard}>
         <Box>
@@ -282,12 +284,12 @@ class Dashboard extends Component {
           />
           <br></br>
           {/* Reemplaza el TextField de fecha con el DatePicker de antd */}
-          <DatePicker
-            id="date"
-            style={{ backgroundColor: "#ffffff", borderRadius: "6px", height: "2.5rem" }}
-            value={filterDate}
-            onChange={(value) => this.setState({ filterDate: value })}
-          />
+            <DatePicker
+              id="date"
+              style={{ backgroundColor: "#ffffff", borderRadius: "6px", height: "2.5rem" }}
+              value={filterDate}
+              onChange={(value) => this.setState({ filterDate: value })}
+            />
         </Box>
 
         {loading ? (
