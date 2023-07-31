@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { withStyles } from "@material-ui/core/styles";
 import {
@@ -11,7 +11,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   TextField,
   CircularProgress,
   Modal,
@@ -21,7 +20,7 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import Spinner from "../images/loading.gif";
+// import Spinner from "../images/loading.gif";
 import ReactPaginate from "react-paginate";
 import "../dashboard.css";
 
@@ -46,8 +45,7 @@ const modalStyles = {
 };
 
 const inputStyle = {
-  backgroundColor: "#c9c9c9", 
-  marginLeft: "20px", 
+  backgroundColor: "#ffffff", 
   borderRadius:"6px", 
   height:"2.5rem", 
   width:"20%",
@@ -286,7 +284,7 @@ class Dashboard extends Component {
           {/* Reemplaza el TextField de fecha con el DatePicker de antd */}
           <DatePicker
             id="date"
-            style={{ backgroundColor: "#c9c9c9", marginLeft: "20px", borderRadius:"6px", height:"2.5rem" }}
+            style={{ backgroundColor: "#ffffff", borderRadius:"6px", height:"2.5rem" }}
             value={filterDate}
             onChange={(value) => this.setState({ filterDate: value })}
           />
@@ -297,22 +295,22 @@ class Dashboard extends Component {
             <CircularProgress />
           </div>
         ) : (
-          <TableContainer component={Paper} className={classes.tableContainer}>
+          <TableContainer className={classes.tableContainer} style={{borderRadius: `20px`}}>
             <Table>
               <TableHead style={{ backgroundColor: "#00796b" }}>
                 <TableRow>
-                  <TableCell>No.</TableCell>
-                  <TableCell>Nombre</TableCell>
-                  <TableCell>Telefono</TableCell>
-                  <TableCell>Fecha</TableCell>
-                  <TableCell>Hora</TableCell>
-                  <TableCell style={{ width: "300px" }}>Descripcion</TableCell>
-                  <TableCell>Acciones</TableCell>
+                  <TableCell style={{fontWeight: 'bold'}} >No.</TableCell>
+                  <TableCell style={{fontWeight: 'bold'}}>Nombre</TableCell>
+                  <TableCell style={{fontWeight: 'bold'}}>Telefono</TableCell>
+                  <TableCell style={{fontWeight: 'bold'}}>Fecha</TableCell>
+                  <TableCell style={{fontWeight: 'bold'}}>Hora</TableCell>
+                  <TableCell style={{fontWeight:'bold', width: "300px" }}>Descripcion</TableCell>
+                  <TableCell style={{fontWeight: 'bold'}}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody style={{ backgroundColor: "#c9c9c9" }}>
                 {currentAppointments.map((appointment) => (
-                  <TableRow key={appointment._id}>
+                  <TableRow key={appointment._id} style={{ backgroundColor: "#c9c9c9" }}>
                     <TableCell>{nr++}</TableCell>
                     <TableCell>{appointment.fullname}</TableCell>
                     <TableCell>{appointment.cellphone}</TableCell>
@@ -365,7 +363,14 @@ class Dashboard extends Component {
             activeClassName={"active"}
           />
         </Box>
-
+        <style>
+  {`
+    a {
+      cursor: pointer;
+      color: #ffffff !important; 
+    }
+  `}
+</style>
         <Modal
           open={this.state.deleteModalOpen}
           onClose={this.handleModalClose}
