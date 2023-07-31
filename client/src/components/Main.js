@@ -195,23 +195,8 @@ function Main() {
                       />
                     )}
                   </Form.Item>
-                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Hora</span>}>
-                    {loaded && (
-                      <Select
-                        id="time"
-                        name="time"
-                        value={time}
-                        onChange={handleChangeTime}
-                      >
-                        {tiemposDisponibles.map(time => (
-                          <Option key={time} value={time}>
-                            {time}
-                          </Option>
-                        ))}
-                      </Select>
-                    )}
-                  </Form.Item>
-                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Servicio</span>}>
+                  {date && (
+                    <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Servicio</span>}>
                     {loaded && (
                       <Select
                         id="description"
@@ -231,6 +216,27 @@ function Main() {
                       </Select>
                     )}
                   </Form.Item>
+                  )}
+                  
+                  {date && description && (
+                    <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Hora</span>}>
+                    {loaded && (
+                      <Select
+                        id="time"
+                        name="time"
+                        value={time}
+                        onChange={handleChangeTime}
+                      >
+                        {tiemposDisponibles.map(time => (
+                          <Option key={time} value={time}>
+                            {time}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Form.Item>
+                  )}
+                  
                   <div className="card-action">
                     <Button
                       type="primary"
