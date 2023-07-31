@@ -50,7 +50,7 @@ const inputStyle = {
   backgroundColor: "#ffffff",
   borderRadius: "6px",
   height: "2.5rem",
-  width: "20%",
+  width: "12.15rem",
   fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'",
   boxSizing: "border-box",
   padding: "4px 11px 4px",
@@ -286,7 +286,7 @@ class Dashboard extends Component {
           {/* Reemplaza el TextField de fecha con el DatePicker de antd */}
             <DatePicker
               id="date"
-              style={{ backgroundColor: "#ffffff", borderRadius: "6px", height: "2.5rem" }}
+              style={{ backgroundColor: "#ffffff", borderRadius: "6px", height: "2.5rem", width: "12.15rem", }}
               value={filterDate}
               onChange={(value) => this.setState({ filterDate: value })}
             />
