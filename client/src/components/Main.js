@@ -36,7 +36,7 @@ function Main() {
 
   const fetchAvailableTimes = async (selectedDate, selectedService) => {
     try {
-      const response = await axios.get("/available-times", {
+      const response = await axios.get(process.env.REACT_APP_API_URL + "/available-times", {
         params: {
           date: selectedDate,
           description: selectedService
@@ -84,7 +84,7 @@ function Main() {
       email
     };
     axios
-      .post("/add-appointment", newAppointment)
+      .post(process.env.REACT_APP_API_URL + "/add-appointment", newAppointment)
       .then(result => {
         setFullname("");
         setCellphone("");

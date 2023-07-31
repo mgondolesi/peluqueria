@@ -26,7 +26,7 @@ class Login extends Component {
     const newUser = { username, password };
 
     axios
-      .post("/login", newUser)
+      .post(process.env.REACT_APP_API_URL + "/login", newUser)
       .then(res => {
         localStorage.setItem("lcl-stg-tkn", res.data.token);
         this.setState({

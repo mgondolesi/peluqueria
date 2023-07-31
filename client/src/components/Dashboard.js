@@ -121,7 +121,7 @@ class Dashboard extends Component {
       });
 
       axios
-        .get("/appointments", {
+        .get(process.env.REACT_APP_API_URL + "/appointments", {
           headers: {
             "Content-type": "application/json",
             "x-auth-token": token,
@@ -141,7 +141,7 @@ class Dashboard extends Component {
 
   deleteAppointment = (id) => {
     axios
-      .delete(`/appointment/${id}`, {
+      .delete(process.env.REACT_APP_API_URL + `/appointment/${id}`, {
         headers: {
           "Content-type": "application/json",
           "x-auth-token": localStorage.getItem("lcl-stg-tkn"),
@@ -170,7 +170,7 @@ class Dashboard extends Component {
     };
 
     axios
-      .put(`/appointment/${_id}`, updatedValues, {
+      .put(process.env.REACT_APP_API_URL + `/appointment/${_id}`, updatedValues, {
         headers: {
           "Content-type": "application/json",
           "x-auth-token": localStorage.getItem("lcl-stg-tkn"),
