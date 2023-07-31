@@ -193,7 +193,7 @@ const getTurnosDisponibles = async (req, res) => {
     time.setHours(8, 0, 0); // Establecer el horario inicial a las 08:00
 
     while (time.getHours() < 20) {
-        allTimes.push(time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+        allTimes.push(time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }));
         time.setMinutes(time.getMinutes() + 30); // Añadir 30 minutos
     }
 
@@ -210,9 +210,10 @@ const getTurnosDisponibles = async (req, res) => {
                 originalDate.setHours(hours);
                 originalDate.setMinutes(minutes);
                 originalDate.setHours(originalDate.getHours() + 1);
-                nextHour = originalDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-                return !occupiedTimes.includes(time) && !occupiedTimes.includes(nextHour);
+                nextHour = originalDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+                return !occupiedTimes.includes(time) && !occupiedTimes.includes(nextHour) && time !== "19:30";
             });
+            
 
             res.json({ times: availableNextHour });
         } else {
