@@ -9,7 +9,7 @@ const getAppointments = (req, res) => {
         .catch(err =>
             res
                 .status(500)
-                .json({ msg: "Could not get the appointments. Please try again." })
+                .json({ msg: "No se pueden obtener los turnos. Intente nuevamente." })
         );
 }
 
@@ -159,15 +159,15 @@ const editAppointment = (req, res) => {
                 appointment
                     .save()
                     .then(appointment =>
-                        res.json({ msg: "Appointment edited succesfully" })
+                        res.json({ msg: "Turno editado exitosamente" })
                     )
                     .catch(err =>
                         res
                             .status(500)
-                            .json({ msg: "Something went wrong. Please try again." })
+                            .json({ msg: "Algo salió mal. Por favor reintente." })
                     );
         })
-        .catch(err => res.status(404).json({ msg: "Appointment not found" }));
+        .catch(err => res.status(404).json({ msg: "Turno no encontrado" }));
 };
 
 // Controlador para eliminar una cita
@@ -176,9 +176,9 @@ const deleteAppointment = (req, res) => {
         .then(appointment =>
             appointment
                 .remove()
-                .then(() => res.json({ msg: "Appointment removed succesfully." }))
+                .then(() => res.json({ msg: "Turno cancelado." }))
         )
-        .catch(err => res.status(404).json({ msg: "Appointment not found" }));
+        .catch(err => res.status(404).json({ msg: "El turno no existe" }));
 };
 
 const getTurnosDisponibles = async (req, res) => {
@@ -220,7 +220,7 @@ const getTurnosDisponibles = async (req, res) => {
             res.json({ times: availableTimes });
         }
     } catch (err) {
-        res.status(500).json({ msg: "Could not get the available times. Please try again." });
+        res.status(500).json({ msg: "No se han encontrado turnos disponibles. Intente en otro día." });
     }
 };
 

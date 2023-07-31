@@ -5,7 +5,7 @@ const sendMail = (req, res) => {
     const { recipientEmail, subject, message } = req.body;
 
     if (!recipientEmail || !subject || !message) {
-        return res.status(400).json({ msg: "All fields are required" });
+        return res.status(400).json({ msg: "Todos los campos son requeridos" });
     }
 
     // Configura el transporte del correo electrónico (SMTP)
