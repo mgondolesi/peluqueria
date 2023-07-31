@@ -69,7 +69,7 @@ class Login extends Component {
                         this.setState({ username: e.target.value })
                       }
                     />
-                    <label htmlFor="username">Username</label>
+                    <label htmlFor="username">Nombre de Usuario</label>
                   </div>
                   <div className="input-field ">
                     <i className="material-icons prefix">keyboard</i>
@@ -83,7 +83,7 @@ class Login extends Component {
                       }
                       onKeyDown={this.handleKeyPress}
                     />
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">Contraseña</label>
                   </div>
                 </div>
               </form>
@@ -100,7 +100,7 @@ class Login extends Component {
                 className="waves-effect red waves-light btn"
                 onClick={() => this.setState({ username: "", password: "" })}
               >
-                <i className="material-icons right">clear</i>Reset
+                <i className="material-icons right">clear</i>Borrar
               </button>
             </div>
           </div>
