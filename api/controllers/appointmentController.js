@@ -32,7 +32,7 @@ const addAppointment = (req, res) => {
             originalDate.setMinutes(minutes);
             originalDate.setHours(originalDate.getHours() + 1);
 
-            nextHour = originalDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            nextHour = originalDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
             const nextHourAvailable = await Appointment.findOne({ date, time: nextHour });
             if (existingAppointment || nextHourAvailable) {
                 res.status(400).json({
