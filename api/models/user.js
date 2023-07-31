@@ -12,7 +12,7 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    login_date:{
+    register_date:{
         type: Date,
         default: Date.now
     }
