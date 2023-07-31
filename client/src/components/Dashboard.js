@@ -45,10 +45,10 @@ const modalStyles = {
 };
 
 const inputStyle = {
-  backgroundColor: "#ffffff", 
-  borderRadius:"6px", 
-  height:"2.5rem", 
-  width:"20%",
+  backgroundColor: "#ffffff",
+  borderRadius: "6px",
+  height: "2.5rem",
+  width: "20%",
   fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';",
   boxSizing: "border-box",
   padding: "4px 11px 4px",
@@ -284,7 +284,7 @@ class Dashboard extends Component {
           {/* Reemplaza el TextField de fecha con el DatePicker de antd */}
           <DatePicker
             id="date"
-            style={{ backgroundColor: "#ffffff", borderRadius:"6px", height:"2.5rem" }}
+            style={{ backgroundColor: "#ffffff", borderRadius: "6px", height: "2.5rem" }}
             value={filterDate}
             onChange={(value) => this.setState({ filterDate: value })}
           />
@@ -295,17 +295,17 @@ class Dashboard extends Component {
             <CircularProgress />
           </div>
         ) : (
-          <TableContainer className={classes.tableContainer} style={{borderRadius: `20px`}}>
+          <TableContainer className={classes.tableContainer} style={{ borderRadius: `20px` }}>
             <Table>
               <TableHead style={{ backgroundColor: "#00796b" }}>
                 <TableRow>
-                  <TableCell style={{fontWeight: 'bold'}} >No.</TableCell>
-                  <TableCell style={{fontWeight: 'bold'}}>Nombre</TableCell>
-                  <TableCell style={{fontWeight: 'bold'}}>Telefono</TableCell>
-                  <TableCell style={{fontWeight: 'bold'}}>Fecha</TableCell>
-                  <TableCell style={{fontWeight: 'bold'}}>Hora</TableCell>
-                  <TableCell style={{fontWeight:'bold', width: "300px" }}>Descripcion</TableCell>
-                  <TableCell style={{fontWeight: 'bold'}}>Acciones</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }} >No.</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Nombre</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Telefono</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Fecha</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Hora</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', width: "300px" }}>Descripcion</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody style={{ backgroundColor: "#c9c9c9" }}>
@@ -364,13 +364,13 @@ class Dashboard extends Component {
           />
         </Box>
         <style>
-  {`
-    a {
-      cursor: pointer;
-      color: #ffffff !important; 
-    }
-  `}
-</style>
+          {`
+            a {
+              cursor: pointer;
+              color: #c9c9c9 !important; 
+            }
+          `}
+        </style>
         <Modal
           open={this.state.deleteModalOpen}
           onClose={this.handleModalClose}
@@ -405,7 +405,7 @@ class Dashboard extends Component {
         <Modal open={this.state.editModalOpen} onClose={this.handleModalClose}>
           <div style={modalStyles}>
             <Typography style={{ textAlign: "center" }} variant="h6">
-              Estás modificando el turno de: 
+              Estás modificando el turno de:
             </Typography>
             <Typography style={{ textAlign: "center" }} variant="h5">
               {fullname}
