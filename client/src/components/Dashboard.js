@@ -23,7 +23,7 @@ import EditIcon from "@material-ui/icons/Edit";
 // import Spinner from "../images/loading.gif";
 import ReactPaginate from "react-paginate";
 import "../dashboard.css";
-import moment from "moment";
+import dayjs from "dayjs";
 
 
 // Importa los componentes del DatePicker de antd
@@ -94,7 +94,7 @@ class Dashboard extends Component {
     this.state = {
       appointments: [],
       filterName: "",
-      filterDate: moment(), // Cambiar el valor inicial a null
+      filterDate: dayjs(), // Cambiar el valor inicial a null
       appointment: {},
       loading: false,
       isAuthenticated: false,
