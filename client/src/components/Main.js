@@ -20,8 +20,6 @@ function Main() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-
-
   useEffect(() => {
     M.AutoInit();
     const today = new Date();
@@ -66,6 +64,12 @@ function Main() {
   const handleChangeDate = (date) => {
     console.log(date);
     setDate(date);
+  };
+
+  const handleChangeCellphone = (value) => {
+    // Use a regular expression to remove any non-digit characters
+    const numericValue = value.replace(/\D/g, "");
+    setCellphone(numericValue);
   };
 
   const makeAppointment = (e) => {
@@ -121,141 +125,150 @@ function Main() {
 
   return (
     <Spin spinning={loading}>
-    <div>
-      <img src={bg} className="bg" alt="background" />
-      <div className="container note">
-        <div className="row">
-          <div className="col s12 m6">
-            <h2>No pierdas tiempo</h2>
-
-            <h2>
-              Reserva tu turno{" "}
-              <i
-                className="material-icons hide-on-small-only"
-                style={{ fontSize: "38px" }}
-              >
-                arrow_forward
-              </i>
-              <i
-                className="material-icons show-on-small hide-on-med-and-up"
-                style={{ fontSize: "38px", textAlign: "center" }}
-              >
-                arrow_downward
-              </i>
-            </h2>
-          </div>
-          <div className="col s12 m6">
-            <div className="card blue-grey lighten-1 center-align">
-              <div className="card-content white-text">
-                <Form layout="vertical" onFinish={makeAppointment}>
-                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Nombre</span>}>
-                    {loaded && (
-                      <Input
-                        id="full_name"
-                        name="fullname"
-                        value={fullname}
-                        onChange={e => setFullname(e.target.value)}
-                        style= {{backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
-                      />
-                    )}
-                  </Form.Item>
-                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Celular</span>} style={{ width: '100%' }}>
-                    {loaded && (
-                      <Input
-                        id="cellphone"
-                        name="cellphone"
-                        style={{ width: '100%', backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
-                        value={cellphone}
-                        onChange={e => setCellphone(e.target.value)}
-                      />
-                    )}
-                  </Form.Item>
-                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Correo Electrónico</span>}>
-                    {loaded && (
-                      <Input
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        style= {{backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
-                      />
-                    )}
-                  </Form.Item>
-                  <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Fecha</span>} style={{ width: '100%' }}>
-                    {loaded && (
-                      <DatePicker
-                        id="date"
-                        name="date"
-                        style={{ width: '100%' }}
-                        value={date}
-                        onChange={handleChangeDate}
-                        placeholder={formattedToday}
-                        disabledDate={disabledDate}
-                        locale={locale}
-                      />
-                    )}
-                  </Form.Item>
-                  {date && (
-                    <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Servicio</span>}>
-                    {loaded && (
-                      <Select
-                        id="description"
-                        name="description"
-                        value={description}
-                        onChange={handleChangeDesc}
-                      >
-                        <Option key='Corte Hombre' value='Corte Hombre'>
-                          Corte Hombre
-                        </Option>
-                        <Option key="Corte Mujer" value="Corte Mujer">
-                          Corte Mujer
-                        </Option>
-                        <Option key="Color" value="Color">
-                          Color
-                        </Option>
-                      </Select>
-                    )}
-                  </Form.Item>
-                  )}
-                  
-                  {date && description && (
-                    <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Hora</span>}>
-                    {loaded && (
-                      <Select
-                        id="time"
-                        name="time"
-                        value={time}
-                        onChange={handleChangeTime}
-                      >
-                        {tiemposDisponibles.map(time => (
-                          <Option key={time} value={time}>
-                            {time}
+      <div>
+        <img src={bg} className="bg" alt="background" />
+        <div className="container note">
+          <div className="row">
+            <div className="col s12 m6">
+              <h2>No pierdas tiempo</h2>
+              <h2>
+                Reserva tu turno{" "}
+                <i
+                  className="material-icons hide-on-small-only"
+                  style={{ fontSize: "38px" }}
+                >
+                  arrow_forward
+                </i>
+                <i
+                  className="material-icons show-on-small hide-on-med-and-up"
+                  style={{ fontSize: "38px", textAlign: "center" }}
+                >
+                  arrow_downward
+                </i>
+              </h2>
+            </div>
+            <div className="col s12 m6">
+              <div className="card blue-grey lighten-1 center-align">
+                <div className="card-content white-text">
+                  <Form layout="vertical" onFinish={makeAppointment}>
+                    <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Nombre</span>}>
+                      {loaded && (
+                        <Input
+                          id="full_name"
+                          name="fullname"
+                          value={fullname}
+                          onChange={e => setFullname(e.target.value)}
+                          style= {{backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
+                        />
+                      )}
+                    </Form.Item>
+                    <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Celular</span>} style={{ width: '100%' }}>
+                      {loaded && (
+                        <Input
+                          id="cellphone"
+                          name="cellphone"
+                          style={{ width: '100%', backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
+                          value={cellphone}
+                          onChange={e => handleChangeCellphone(e.target.value)}
+                        />
+                      )}
+                    </Form.Item>
+                    <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Correo Electrónico</span>}>
+                      {loaded && (
+                        <Input
+                          id="email"
+                          name="email"
+                          value={email}
+                          rules={[
+                            {
+                              type: 'email',
+                              message: 'The input is not valid E-mail!',
+                            },
+                            {
+                              required: true,
+                              message: 'Please input your E-mail!',
+                            },
+                          ]}
+                          onChange={e => setEmail(e.target.value)}
+                          style= {{backgroundColor:'white', borderRadius:"6px", height:"2.1rem" }}
+                        />
+                      )}
+                    </Form.Item>
+                    <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Fecha</span>} style={{ width: '100%' }}>
+                      {loaded && (
+                        <DatePicker
+                          id="date"
+                          name="date"
+                          style={{ width: '100%' }}
+                          value={date}
+                          onChange={handleChangeDate}
+                          placeholder={formattedToday}
+                          disabledDate={disabledDate}
+                          locale={locale}
+                        />
+                      )}
+                    </Form.Item>
+                    {date && (
+                      <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Servicio</span>}>
+                      {loaded && (
+                        <Select
+                          id="description"
+                          name="description"
+                          value={description}
+                          onChange={handleChangeDesc}
+                        >
+                          <Option key='Corte Hombre' value='Corte Hombre'>
+                            Corte Hombre
                           </Option>
-                        ))}
-                      </Select>
+                          <Option key="Corte Mujer" value="Corte Mujer">
+                            Corte Mujer
+                          </Option>
+                          <Option key="Color" value="Color">
+                            Color
+                          </Option>
+                        </Select>
+                      )}
+                    </Form.Item>
                     )}
-                  </Form.Item>
-                  )}
-                  
-                  <div className="card-action">
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      style={{ margin: "5px", backgroundColor: "#00796B", borderColor: "#00665A", color: "#ffffff" }}
-                    >
-                      <i className="material-icons right">send</i>Reservar
-                    </Button>
-                    <Button type="danger" htmlType="cancel" onClick={resetForm} style={{backgroundColor:"#c63637", borderColor:"#BA3335", color: "#ffffff"}}>
-                      <i className="material-icons right">clear</i>Limpiar
-                    </Button>
-                  </div>
-                </Form>
+                    
+                    {date && description && (
+                      <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Hora</span>}>
+                      {loaded && (
+                        <Select
+                          id="time"
+                          name="time"
+                          value={time}
+                          onChange={handleChangeTime}
+                        >
+                          {tiemposDisponibles.map(time => (
+                            <Option key={time} value={time}>
+                              {time}
+                            </Option>
+                          ))}
+                        </Select>
+                      )}
+                    </Form.Item>
+                    )}
+                    
+                    <div className="card-action">
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        style={{ margin: "5px", backgroundColor: "#00796B", borderColor: "#00665A", color: "#ffffff" }}
+                      >
+                        <i className="material-icons right">send</i>Reservar
+                      </Button>
+                      <Button type="danger" htmlType="cancel" onClick={resetForm} style={{backgroundColor:"#c63637", borderColor:"#BA3335", color: "#ffffff"}}>
+                        <i className="material-icons right">clear</i>Limpiar
+                      </Button>
+                    </div>
+                  </Form>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </Spin>
   );
 }
