@@ -361,16 +361,11 @@ class Dashboard extends Component {
             containerClassName={"pagination"}
             subContainerClassName={"pages pagination"}
             activeClassName={"active"}
+            previousClassName={"paginateArrow"}
+            nextClassName={"paginateArrow"}
           />
         </Box>
-        <style>
-          {`
-            a {
-              cursor: pointer;
-              color: #c9c9c9 !important; 
-            }
-          `}
-        </style>
+        
         <Modal
           open={this.state.deleteModalOpen}
           onClose={this.handleModalClose}
