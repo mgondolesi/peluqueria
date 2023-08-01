@@ -4,7 +4,7 @@ function NotFound() {
   return (
     <div className="container white-text">
       <h1>
-        <strong>404</strong>Page not Found
+        <strong>NADA POR AQUI!!</strong>
       </h1>
     </div>
   );

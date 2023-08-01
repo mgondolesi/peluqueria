@@ -21,7 +21,7 @@ const sendMail = (req, res) => {
     });
 
     // Define el contenido del correo electrónico en formato HTML con la imagen
-    const imageSrc = 'http://186.138.96.77:3000/static/media/logo.30bd7b947921d94d3131.png';
+    const imageSrc = 'http://47.254.20.172/static/media/logo.30bd7b947921d94d3131.png';
     const mailOptions = {
         from: 'mgondolesi@gmail.com', // Cambiar a tu dirección de correo
         to: recipientEmail,

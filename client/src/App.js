@@ -19,9 +19,20 @@ class App extends Component {
   state={
     isAuthenticated: false
   }
-  verifyAuth = (value) =>{
-    this.setState({isAuthenticated: value})
-  }
+  verifyAuth = (value) => {
+    this.setState({ isAuthenticated: value }, () => {
+      if (!value) {
+        this.logout();
+      }
+    });
+  };
+  logout = () => {
+    localStorage.removeItem("lcl-stg-tkn");
+    localStorage.removeItem("lcl-stg-expiration");
+    this.setState({
+      isAuthenticated: false
+    });
+  };
 
   render(){
     return (

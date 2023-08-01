@@ -9,19 +9,35 @@ class NavBar extends Component {
   };
   componentDidMount() {
     M.AutoInit();
-    const token = localStorage.getItem("lcl-stg-tkn");
-    if (token) {
-      this.setState({
-        isAuthenticated: true
-      });
-    }
+    this.checkAuthentication();
+
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.isAuthenticated !== this.props.isAuthenticated) {
-      this.setState({ isAuthenticated: true });
+      this.checkAuthentication();
     }
   }
+
+  checkAuthentication = () => {
+    const token = localStorage.getItem("lcl-stg-tkn");
+    const expirationTime = localStorage.getItem("lcl-stg-expiration");
+
+    if (token && expirationTime) {
+      const currentTime = new Date().getTime();
+      if (currentTime < parseInt(expirationTime)) {
+        this.setState({
+          isAuthenticated: true
+        });
+      } else {
+        this.logout();
+      }
+    } else {
+      this.setState({
+        isAuthenticated: false
+      });
+    }
+  };
 
   logout = () => {
     localStorage.removeItem("lcl-stg-tkn");

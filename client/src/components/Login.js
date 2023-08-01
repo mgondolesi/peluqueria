@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import M from "materialize-css/dist/js/materialize.min.js";
 
+const sessionDuration = 55 * 60 * 1000; // 30 minutos en milisegundos
+
 class Login extends Component {
   state = {
     username: "",
@@ -10,6 +12,8 @@ class Login extends Component {
     user: null,
     token: null
   };
+
+  
   componentDidMount() {
     M.AutoInit();
   }
@@ -21,6 +25,7 @@ class Login extends Component {
     }
   };
 
+
   login = () => {
     const { username, password } = this.state;
     const newUser = { username, password };
@@ -28,7 +33,9 @@ class Login extends Component {
     axios
       .post(process.env.REACT_APP_API_URL + "/login", newUser)
       .then(res => {
+        const expirationTime = new Date().getTime() + sessionDuration;
         localStorage.setItem("lcl-stg-tkn", res.data.token);
+        localStorage.setItem("lcl-stg-expiration", expirationTime);
         this.setState({
           isAuthenticated: true,
           user: res.data.user,
