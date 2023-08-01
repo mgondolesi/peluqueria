@@ -187,10 +187,10 @@ const getTurnosDisponibles = async (req, res) => {
     if (!date || !description) {
         return res.status(400).json({ msg: "Se requiere Fecha y Servicio" });
     }
-    // Obtener todos los horarios disponibles desde las 08:00 hasta las 20:00
+    // Obtener todos los horarios disponibles desde las 10:00 hasta las 20:00
     const allTimes = [];
     let time = new Date();
-    time.setHours(8, 0, 0); // Establecer el horario inicial a las 08:00
+    time.setHours(10, 0, 0); // Establecer el horario inicial a las 10:00
 
     while (time.getHours() < 20) {
         allTimes.push(time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }));

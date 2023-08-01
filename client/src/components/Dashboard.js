@@ -365,7 +365,7 @@ class Dashboard extends Component {
             }}
             style={{ marginTop: "1%" }}
           >
-            Crear Usuario
+            Crear Administrador
           </Button>
         </Box>
 
@@ -379,12 +379,12 @@ class Dashboard extends Component {
               <TableHead style={{ backgroundColor: "#00796b" }}>
                 <TableRow>
                   <TableCell style={{ fontWeight: 'bold' }} >No.</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Fecha</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Hora</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>Nombre</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>Telefono</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>Email</TableCell>
-                  <TableCell style={{ fontWeight: 'bold' }}>Fecha</TableCell>
-                  <TableCell style={{ fontWeight: 'bold' }}>Hora</TableCell>
-                  <TableCell style={{ fontWeight: 'bold', width: "300px" }}>Descripcion</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Descripcion</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -392,11 +392,11 @@ class Dashboard extends Component {
                 {currentAppointments.map((appointment) => (
                   <TableRow key={appointment._id} style={{ backgroundColor: "#c9c9c9" }}>
                     <TableCell>{nr++}</TableCell>
+                    <TableCell>{dayjs(appointment.date).format("DD/MM/YYYY")}</TableCell>
+                    <TableCell>{appointment.time}</TableCell>
                     <TableCell>{appointment.fullname}</TableCell>
                     <TableCell>{appointment.cellphone}</TableCell>
                     <TableCell>{appointment.email}</TableCell>
-                    <TableCell>{appointment.date}</TableCell>
-                    <TableCell>{appointment.time}</TableCell>
                     <TableCell>{appointment.description}</TableCell>
                     <TableCell>
                       <Button
@@ -546,7 +546,7 @@ class Dashboard extends Component {
         <Modal open={this.state.registerModalOpen} onClose={this.handleModalClose}>
           <div style={modalStyles}>
             <Typography style={{ textAlign: "center" }} variant="h6">
-              Agregar un nuevo usuario a la plataforma
+              Agregar un nuevo usuario administrador a la plataforma
             </Typography>
             <form>
               <Box mt={2} style={{ textAlign: "center" }}>
@@ -588,7 +588,7 @@ class Dashboard extends Component {
                   }}
                   className={classes.modalButtons}
                 >
-                  Crear Usuario
+                  Crear Administrador
                 </Button>
                 <Button
                   variant="contained"
