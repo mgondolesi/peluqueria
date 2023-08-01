@@ -27,8 +27,9 @@ import dayjs from "dayjs";
 
 
 // Importa los componentes del DatePicker de antd
-import { DatePicker, Input } from "antd";
+import { DatePicker, Input, Form, Select } from "antd";
 //import "antd/dist/antd.css";
+const { Option } = Select;
 
 const modalStyles = {
   position: "absolute",
@@ -100,8 +101,14 @@ class Dashboard extends Component {
       isAuthenticated: false,
       deleteModalOpen: false,
       editModalOpen: false,
+      registerModalOpen: false,
       currentPage: 0,
       appointmentsPerPage: 10, // Número de citas por página
+      username: "",
+      password: "",
+      tiemposDisponibles: [],
+      loaded: false,
+      selectedTime: "",
     };
     this.dateInput = React.createRef();
     this.timeInput = React.createRef();
@@ -166,7 +173,7 @@ class Dashboard extends Component {
     const { _id } = this.state.appointment;
     const updatedValues = {
       date: this.dateInput.current.value,
-      time: this.timeInput.current.value,
+      time: this.state.selectedTime
     };
 
     axios
@@ -189,8 +196,51 @@ class Dashboard extends Component {
           html: res.data.msg,
           classes: "green darken-1 rounded",
         });
+        this.setState({
+          selectedTime: "",
+          loaded: false,          
+        })
       })
       .catch((err) => console.log(err));
+  };
+
+  registerUser = () => {
+    const { username, password } = this.state;
+    const newUser = { username, password };
+
+    axios
+      .post(process.env.REACT_APP_API_URL + "/register", newUser)
+      .then(res => {
+        M.toast({
+          html: "Usuario: " + res.data.user.username + " creado exitosamente.",
+          classes: "green darken-1 rounded"
+        })
+      })
+      .catch(err =>
+        M.toast({
+          html: err.response.data.msg,
+          classes: "red darken-1 rounded"
+        })
+      );
+  };
+
+  fetchAvailableTimes = async (selectedDate, selectedService) => {
+    try {
+      const response = await axios.get(process.env.REACT_APP_API_URL + "/available-times", {
+        params: {
+          date: selectedDate,
+          description: selectedService
+        }
+      });
+      this.setState({
+        tiemposDisponibles: response.data.times,
+        loaded: true,
+      });
+      console.log(this.tiemposDisponibles);
+      console.log(this.loaded);
+    } catch (error) {
+      console.error("Error fetching available times:", error);
+    }
   };
 
   handleDeleteModalOpen = () => {
@@ -201,8 +251,12 @@ class Dashboard extends Component {
     this.setState({ editModalOpen: true });
   };
 
+  handleRegisterModalOpen = () => {
+    this.setState({ registerModalOpen: true });
+  };
+
   handleModalClose = () => {
-    this.setState({ deleteModalOpen: false, editModalOpen: false });
+    this.setState({ deleteModalOpen: false, editModalOpen: false, registerModalOpen: false });
   };
 
   handlePageChange = (selectedPage) => {
@@ -219,8 +273,12 @@ class Dashboard extends Component {
       appointment,
       currentPage,
       appointmentsPerPage,
+      username,
+      password,
+      tiemposDisponibles,
+      loaded
     } = this.state;
-    const { fullname, date, time } = appointment;
+    const { fullname, date, time, description } = appointment;
 
     // Filtrar por fecha antes de aplicar la paginación
     const filteredAppointments = this.state.appointments
@@ -244,7 +302,7 @@ class Dashboard extends Component {
       indexOfFirstAppointment,
       indexOfLastAppointment
     );
-    
+
     return (
       <Container className={classes.dashboard}>
         <Box>
@@ -283,13 +341,32 @@ class Dashboard extends Component {
             onChange={(e) => this.setState({ filterName: e.target.value })}
           />
           <br></br>
-          {/* Reemplaza el TextField de fecha con el DatePicker de antd */}
+
+          <div style={{ display: "flex", alignItems: "center" }}>
             <DatePicker
               id="date"
-              style={{ backgroundColor: "#ffffff", borderRadius: "6px", height: "2.5rem", width: "12.15rem", }}
+              style={{
+                backgroundColor: "#ffffff",
+                borderRadius: "6px",
+                height: "2.5rem",
+                width: "12.15rem",
+              }}
               value={filterDate}
               onChange={(value) => this.setState({ filterDate: value })}
             />
+
+          </div>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<EditIcon />}
+            onClick={() => {
+              this.handleRegisterModalOpen();
+            }}
+            style={{ marginTop: "1%" }}
+          >
+            Crear Usuario
+          </Button>
         </Box>
 
         {loading ? (
@@ -304,6 +381,7 @@ class Dashboard extends Component {
                   <TableCell style={{ fontWeight: 'bold' }} >No.</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>Nombre</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>Telefono</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Email</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>Fecha</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>Hora</TableCell>
                   <TableCell style={{ fontWeight: 'bold', width: "300px" }}>Descripcion</TableCell>
@@ -316,6 +394,7 @@ class Dashboard extends Component {
                     <TableCell>{nr++}</TableCell>
                     <TableCell>{appointment.fullname}</TableCell>
                     <TableCell>{appointment.cellphone}</TableCell>
+                    <TableCell>{appointment.email}</TableCell>
                     <TableCell>{appointment.date}</TableCell>
                     <TableCell>{appointment.time}</TableCell>
                     <TableCell>{appointment.description}</TableCell>
@@ -367,7 +446,7 @@ class Dashboard extends Component {
             nextClassName={"paginateArrow"}
           />
         </Box>
-        
+
         <Modal
           open={this.state.deleteModalOpen}
           onClose={this.handleModalClose}
@@ -404,8 +483,11 @@ class Dashboard extends Component {
             <Typography style={{ textAlign: "center" }} variant="h6">
               Estás modificando el turno de:
             </Typography>
-            <Typography style={{ textAlign: "center" }} variant="h5">
+            <Typography style={{ fontWeight:"bold", textAlign: "center" }} variant="h5">
               {fullname}
+            </Typography>
+            <Typography style={{ textAlign: "center" }} variant="h6">
+              Servicio: <Box component="span" fontWeight="bold">{description}</Box>
             </Typography>
             <form>
               <Box mt={2} style={{ textAlign: "center" }}>
@@ -416,17 +498,26 @@ class Dashboard extends Component {
                   variant="outlined"
                   defaultValue={date}
                   inputRef={this.dateInput}
+                  onChange={(event) => this.fetchAvailableTimes(event.target.value, description)}
+                  onBlur= {() => this.setState({selectedTime: time})}
                 />
               </Box>
               <Box mt={2} style={{ textAlign: "center" }}>
-                <TextField
+                {loaded && (<Select
                   id="editTime"
                   name="editTime"
-                  type="time"
-                  variant="outlined"
-                  inputRef={this.timeInput}
                   defaultValue={time}
-                />
+                  dropdownStyle={{ zIndex: 9999, position: 'relative' }}
+                  onChange={(value) => this.setState({ selectedTime: value})}
+                  inputRef={this.timeInput}
+                  >
+                  {tiemposDisponibles.map(time => (
+                    <Option key={time} value={time}>
+                      {time}
+                    </Option>
+                  ))}
+                </Select>)}
+                
               </Box>
               <Box mt={2} style={{ textAlign: "center" }}>
                 <Button
@@ -439,6 +530,65 @@ class Dashboard extends Component {
                   className={classes.modalButtons}
                 >
                   Modificar
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={this.handleModalClose}
+                  className={classes.modalButtons}
+                >
+                  Atrás
+                </Button>
+              </Box>
+            </form>
+          </div>
+        </Modal>
+
+        <Modal open={this.state.registerModalOpen} onClose={this.handleModalClose}>
+          <div style={modalStyles}>
+            <Typography style={{ textAlign: "center" }} variant="h6">
+              Agregar un nuevo usuario a la plataforma
+            </Typography>
+            <form>
+              <Box mt={2} style={{ textAlign: "center" }}>
+                <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Nombre de Usuario</span>}>
+                  <Input
+                    id="username"
+                    type="text"
+                    className="validate"
+                    value={username}
+                    onChange={e =>
+                      this.setState({ username: e.target.value })
+                    }
+                  />
+                </Form.Item>
+
+              </Box>
+              <Box mt={2} style={{ textAlign: "center" }}>
+
+                <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Contraseña</span>}>
+                  <Input
+                    id="password"
+                    type="password"
+                    className="validate"
+                    value={password}
+                    onChange={e =>
+                      this.setState({ password: e.target.value })
+                    }
+                  />
+                </Form.Item>
+              </Box>
+
+              <Box mt={2} style={{ textAlign: "center" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    this.handleModalClose();
+                    this.registerUser();
+                  }}
+                  className={classes.modalButtons}
+                >
+                  Crear Usuario
                 </Button>
                 <Button
                   variant="contained"

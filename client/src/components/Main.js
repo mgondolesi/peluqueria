@@ -151,7 +151,7 @@ function Main() {
                 <div className="card blue-grey lighten-1 center-align">
                   <div className="card-content white-text">
                     <Form layout="vertical" onFinish={makeAppointment}>
-                      <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Nombre</span>}>
+                      <Form.Item label={<span style={{ color: '#454545', fontWeight: 'bold' }}>Nombre y Apellido</span>}>
                         {loaded && (
                           <Input
                             id="full_name"
