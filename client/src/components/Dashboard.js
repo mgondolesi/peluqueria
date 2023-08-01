@@ -497,6 +497,7 @@ class Dashboard extends Component {
                   type="date"
                   variant="outlined"
                   defaultValue={date}
+                  style={{ backgroundColor:"White", borderRadius: "6px", width:"9rem" }}
                   inputRef={this.dateInput}
                   onChange={(event) => this.fetchAvailableTimes(event.target.value, description)}
                   onBlur= {() => this.setState({selectedTime: time})}
@@ -510,6 +511,7 @@ class Dashboard extends Component {
                   dropdownStyle={{ zIndex: 9999, position: 'relative' }}
                   onChange={(value) => this.setState({ selectedTime: value})}
                   inputRef={this.timeInput}
+                  style={{ width:"9rem" }}
                   >
                   {tiemposDisponibles.map(time => (
                     <Option key={time} value={time}>
