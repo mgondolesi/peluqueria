@@ -8,11 +8,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: Alibaba Cloud Linux  3.2104 LTS 64 bit
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [14.x]
 
     steps:
     - uses: actions/checkout@v3
@@ -24,5 +24,7 @@ jobs:
 
     - name: Build
       run: |
+        cd /api
         npm install
-        npx webpack
+        cd ../client
+        npm run build
